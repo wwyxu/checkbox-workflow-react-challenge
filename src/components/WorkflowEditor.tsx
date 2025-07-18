@@ -25,6 +25,7 @@ import ApiNode from './nodes/ApiNode';
 import EndNode from './nodes/EndNode';
 import BlockPanel from './BlockPanel';
 import moreThanOneInvalid from '@/constants/errors';
+import Modal from './common/Modal';
 
 const nodeTypes = {
   start: StartNode,
@@ -44,6 +45,8 @@ const WorkflowEditorInner = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [workflowErrors, setWorkflowErrors] = useState<string[]>([]);
+  const [showNodeDialog, setShowNodeDialog] = useState(false);
+  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
 
   const { screenToFlowPosition } = useReactFlow();
 
@@ -51,6 +54,13 @@ const WorkflowEditorInner = () => {
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
+
+  // Handle node click
+  const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
+    event.preventDefault();
+    setSelectedNode(node);
+    setShowNodeDialog(true);
+  }, []);
 
   // Handle drag over event
   const onDragOver = useCallback((event) => {
@@ -93,6 +103,7 @@ const WorkflowEditorInner = () => {
     [screenToFlowPosition, setNodes]
   );
 
+  // Check for workflow errors
   useEffect(() => {
     const errors: string[] = [];
 
@@ -131,6 +142,11 @@ const WorkflowEditorInner = () => {
     setShowSaveDialog(true);
   };
 
+  const handleNodeDialogClose = () => {
+    setShowNodeDialog(false);
+    setSelectedNode(null);
+  };
+
   return (
     <Flex minHeight="100vh" direction="column" style={{ width: '100%' }}>
       <Card m="4" mb="0">
@@ -166,6 +182,7 @@ const WorkflowEditorInner = () => {
               onNodesChange={onNodesChange}
               onEdgesChange={onEdgesChange}
               onConnect={onConnect}
+              onNodeClick={onNodeClick}
               onDrop={onDrop}
               onDragOver={onDragOver}
               nodeTypes={nodeTypes}
@@ -206,22 +223,52 @@ const WorkflowEditorInner = () => {
         </Box>
       </Flex>
 
-      <AlertDialog.Root open={showSaveDialog} onOpenChange={setShowSaveDialog}>
-        <AlertDialog.Content maxWidth="450px">
-          <AlertDialog.Title>Workflow Saved</AlertDialog.Title>
-          <AlertDialog.Description size="2">
-            Your workflow configuration has been saved to the browser console. Check the developer
-            console for the complete configuration details.
-          </AlertDialog.Description>
-          <Flex gap="3" mt="4" justify="end">
-            <AlertDialog.Cancel>
-              <Button variant="soft" color="gray">
-                Close
-              </Button>
-            </AlertDialog.Cancel>
-          </Flex>
-        </AlertDialog.Content>
-      </AlertDialog.Root>
+      {/* Node Details Modal */}
+      <Modal
+        open={showNodeDialog}
+        title={selectedNode ? `${selectedNode.type} Node Details` : 'Node Details'}
+        onOpenChange={setShowNodeDialog}
+        onClose={handleNodeDialogClose}
+      >
+        {selectedNode && (
+          <div>
+            <Text size="2" weight="bold">Node ID:</Text>
+            <Text size="2" style={{ display: 'block', marginBottom: '8px' }}>{selectedNode.id}</Text>
+            
+            <Text size="2" weight="bold">Type:</Text>
+            <Text size="2" style={{ display: 'block', marginBottom: '8px' }}>{selectedNode.type}</Text>
+            
+            <Text size="2" weight="bold">Position:</Text>
+            <Text size="2" style={{ display: 'block', marginBottom: '8px' }}>
+              x: {Math.round(selectedNode.position.x)}, y: {Math.round(selectedNode.position.y)}
+            </Text>
+            
+            <Text size="2" weight="bold">Data:</Text>
+            <pre style={{ 
+              background: '#f8fafc', 
+              padding: '8px', 
+              borderRadius: '4px', 
+              fontSize: '12px',
+              overflow: 'auto',
+              maxHeight: '200px'
+            }}>
+              {JSON.stringify(selectedNode.data, null, 2)}
+            </pre>
+          </div>
+        )}
+      </Modal>
+
+      {/* Save Dialog Modal */}
+      <Modal
+        open={showSaveDialog}
+        title="Workflow Saved"
+        onOpenChange={setShowSaveDialog}
+        onClose={() => setShowSaveDialog(false)}
+      >
+        <Text size="2">
+          Your workflow configuration has been saved to the browser console. Check the developer console for the complete configuration details.
+        </Text>
+      </Modal>
     </Flex>
   );
 };
