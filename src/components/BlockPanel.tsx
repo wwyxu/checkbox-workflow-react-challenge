@@ -46,6 +46,11 @@ const BlockPanel = () => {
     },
   ];
 
+  const onDragStart = (event, nodeType) => {
+    event.dataTransfer.setData('application/reactflow', nodeType);
+    event.dataTransfer.effectAllowed = 'move';
+  };
+
   return (
     <Card style={{ width: '256px', height: '100%' }}>
       <Box p="4" pb="3">
@@ -63,15 +68,26 @@ const BlockPanel = () => {
                 align="center"
                 gap="3"
                 p="3"
+                draggable
+                onDragStart={(event) => onDragStart(event, block.id)}
                 style={{
                   borderRadius: 'var(--radius-4)',
-                  cursor: 'pointer',
+                  cursor: 'grab',
                   backgroundColor: block.color,
                   color: 'white',
                   transition: 'all 0.2s ease',
                   border: '1px solid rgba(255, 255, 255, 0.1)',
                   backdropFilter: 'blur(8px)',
                   boxShadow: 'var(--shadow-2);',
+                }}
+                onMouseDown={(e) => {
+                  e.currentTarget.style.cursor = 'grabbing';
+                }}
+                onMouseUp={(e) => {
+                  e.currentTarget.style.cursor = 'grab';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.cursor = 'grab';
                 }}
               >
                 <IconComponent size={16} />

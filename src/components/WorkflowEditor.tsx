@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import {
   ReactFlow,
   MiniMap,
@@ -10,6 +10,8 @@ import {
   Connection,
   Edge,
   Node,
+  useReactFlow,
+  ReactFlowProvider,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -34,15 +36,60 @@ const nodeTypes = {
 const initialNodes: Node[] = [];
 const initialEdges: Edge[] = [];
 
-const WorkflowEditor = () => {
+let nodeId = 0;
+
+const WorkflowEditorInner = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [workflowErrors, setWorkflowErrors] = useState<string[]>([]);
 
+  const { screenToFlowPosition } = useReactFlow();
+
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
+  );
+
+  // Handle drag over event
+  const onDragOver = useCallback((event) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }, []);
+
+  // Handle drop event
+  const onDrop = useCallback(
+    (event) => {
+      event.preventDefault();
+
+      const type = event.dataTransfer.getData('application/reactflow');
+      
+      if (typeof type === 'undefined' || !type) {
+        return;
+      }
+
+      // Get the position where the node was dropped
+      const position = screenToFlowPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+
+      // Create a new node
+      const newNode = {
+        id: `${type}-${nodeId++}`,
+        type,
+        position,
+        data: {
+          label: `${type} node`,
+          ...(type === 'form' && { fields: [] }),
+          ...(type === 'conditional' && { conditions: [] }),
+          ...(type === 'api' && { endpoint: '', method: 'GET' }),
+        },
+      };
+
+      setNodes((nds) => nds.concat(newNode));
+    },
+    [screenToFlowPosition, setNodes]
   );
 
   const handleSave = () => {
@@ -99,45 +146,49 @@ const WorkflowEditor = () => {
                 </Text>
               </Box>
             )}
-            <ReactFlow
-              nodes={nodes}
-              edges={edges}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
-              nodeTypes={nodeTypes}
-              fitView
-              style={{
-                width: '100%',
-                height: '100%',
-                backgroundColor: '#f8fafc',
-                borderRadius: 'var(--radius)',
-              }}
-            >
-              <Controls
-                style={{ backgroundColor: 'white', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-              />
-              <MiniMap
-                style={{ backgroundColor: 'white', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                nodeColor={(node) => {
-                  switch (node.type) {
-                    case 'start':
-                      return '#10b981';
-                    case 'form':
-                      return '#3b82f6';
-                    case 'conditional':
-                      return '#f59e0b';
-                    case 'api':
-                      return '#a855f7';
-                    case 'end':
-                      return '#ef4444';
-                    default:
-                      return '#6b7280';
-                  }
+
+              <ReactFlow
+                nodes={nodes}
+                edges={edges}
+                onNodesChange={onNodesChange}
+                onEdgesChange={onEdgesChange}
+                onConnect={onConnect}
+                onDrop={onDrop}
+                onDragOver={onDragOver}
+                nodeTypes={nodeTypes}
+                fitView
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: '#f8fafc',
+                  borderRadius: 'var(--radius)',
                 }}
-              />
-              <Background color="#e2e8f0" gap={20} />
-            </ReactFlow>
+              >
+                <Controls
+                  style={{ backgroundColor: 'white', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                />
+                <MiniMap
+                  style={{ backgroundColor: 'white', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                  nodeColor={(node) => {
+                    switch (node.type) {
+                      case 'start':
+                        return '#10b981';
+                      case 'form':
+                        return '#3b82f6';
+                      case 'conditional':
+                        return '#f59e0b';
+                      case 'api':
+                        return '#a855f7';
+                      case 'end':
+                        return '#ef4444';
+                      default:
+                        return '#6b7280';
+                    }
+                  }}
+                />
+                <Background color="#e2e8f0" gap={20} />
+              </ReactFlow>
+
           </Card>
         </Box>
       </Flex>
@@ -159,6 +210,14 @@ const WorkflowEditor = () => {
         </AlertDialog.Content>
       </AlertDialog.Root>
     </Flex>
+  );
+};
+
+const WorkflowEditor = () => {
+  return (
+    <ReactFlowProvider>
+      <WorkflowEditorInner />
+    </ReactFlowProvider>
   );
 };
 
