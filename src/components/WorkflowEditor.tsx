@@ -26,6 +26,8 @@ import EndNode from './nodes/EndNode';
 import BlockPanel from './BlockPanel';
 import moreThanOneInvalid from '@/constants/errors';
 import Modal from './common/Modal';
+import APINodeConfig from './formconfig/ApiNodeConfig';
+import FormNodeConfig from './formconfig/FormNodeConfig';
 
 const nodeTypes = {
   start: StartNode,
@@ -47,6 +49,9 @@ const WorkflowEditorInner = () => {
   const [workflowErrors, setWorkflowErrors] = useState<string[]>([]);
   const [showNodeDialog, setShowNodeDialog] = useState(false);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+
+  console.log(nodes);
+  console.log("BALCAO")
 
   const { screenToFlowPosition } = useReactFlow();
 
@@ -74,7 +79,7 @@ const WorkflowEditorInner = () => {
       event.preventDefault();
 
       const type = event.dataTransfer.getData('application/reactflow');
-      
+
       if (typeof type === 'undefined' || !type) {
         return;
       }
@@ -145,6 +150,54 @@ const WorkflowEditorInner = () => {
   const handleNodeDialogClose = () => {
     setShowNodeDialog(false);
     setSelectedNode(null);
+  };
+
+  const handleNodeSave = (node) => {
+    setNodes((nds) =>
+      nds.map((n) => (n.id === node.id ? { ...n, data: { ...node.data } } : n))
+    );
+
+    setShowNodeDialog(false);
+  }
+
+  const renderNodeConfig = () => {
+    if (!selectedNode) return null;
+
+    switch (selectedNode.type) {
+      case 'api':
+        return <APINodeConfig node={selectedNode} workflow={nodes} onSave={handleNodeSave} />;
+
+      case 'form':
+        return <FormNodeConfig node={selectedNode} onSave={handleNodeSave} />;
+
+      default:
+        return (
+          <div>
+            <Text size="2" weight="bold">Node ID:</Text>
+            <Text size="2" style={{ display: 'block', marginBottom: '8px' }}>{selectedNode.id}</Text>
+
+            <Text size="2" weight="bold">Type:</Text>
+            <Text size="2" style={{ display: 'block', marginBottom: '8px' }}>{selectedNode.type}</Text>
+
+            <Text size="2" weight="bold">Position:</Text>
+            <Text size="2" style={{ display: 'block', marginBottom: '8px' }}>
+              x: {Math.round(selectedNode.position.x)}, y: {Math.round(selectedNode.position.y)}
+            </Text>
+
+            <Text size="2" weight="bold">Data:</Text>
+            <pre style={{
+              background: '#f8fafc',
+              padding: '8px',
+              borderRadius: '4px',
+              fontSize: '12px',
+              overflow: 'auto',
+              maxHeight: '200px'
+            }}>
+              {JSON.stringify(selectedNode.data, null, 2)}
+            </pre>
+          </div>
+        );
+    }
   };
 
   return (
@@ -230,32 +283,7 @@ const WorkflowEditorInner = () => {
         onOpenChange={setShowNodeDialog}
         onClose={handleNodeDialogClose}
       >
-        {selectedNode && (
-          <div>
-            <Text size="2" weight="bold">Node ID:</Text>
-            <Text size="2" style={{ display: 'block', marginBottom: '8px' }}>{selectedNode.id}</Text>
-            
-            <Text size="2" weight="bold">Type:</Text>
-            <Text size="2" style={{ display: 'block', marginBottom: '8px' }}>{selectedNode.type}</Text>
-            
-            <Text size="2" weight="bold">Position:</Text>
-            <Text size="2" style={{ display: 'block', marginBottom: '8px' }}>
-              x: {Math.round(selectedNode.position.x)}, y: {Math.round(selectedNode.position.y)}
-            </Text>
-            
-            <Text size="2" weight="bold">Data:</Text>
-            <pre style={{ 
-              background: '#f8fafc', 
-              padding: '8px', 
-              borderRadius: '4px', 
-              fontSize: '12px',
-              overflow: 'auto',
-              maxHeight: '200px'
-            }}>
-              {JSON.stringify(selectedNode.data, null, 2)}
-            </pre>
-          </div>
-        )}
+        {renderNodeConfig()}
       </Modal>
 
       {/* Save Dialog Modal */}
