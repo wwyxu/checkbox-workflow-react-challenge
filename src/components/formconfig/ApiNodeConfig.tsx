@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { Models } from '@/models';
+import { validateApiNodeConfig } from '@/validation/forms/ApiNodeConfig';
 
 const APINodeConfig = ({ node, onSave, workflow }) => {
   const [nodeName, setNodeName] = useState<string>(node?.data?.label || '');
@@ -32,27 +33,8 @@ const APINodeConfig = ({ node, onSave, workflow }) => {
 
   const availableFields = getAvailableFields();
 
-  const validateURL = (url: string): boolean => {
-    try {
-      new URL(url);
-      return true;
-    } catch {
-      return false;
-    }
-  };
-
   const validateForm = (): boolean => {
-    const newErrors: Models.ValidationErrors = {};
-
-    if (!nodeName.trim()) {
-      newErrors.nodeName = 'Node name is required';
-    }
-    
-    if (!url.trim()) {
-      newErrors.url = 'URL is required';
-    } else if (!validateURL(url)) {
-      newErrors.url = 'Please enter a valid URL';
-    }
+    const newErrors: Models.ValidationErrors = validateApiNodeConfig(nodeName, url);
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;

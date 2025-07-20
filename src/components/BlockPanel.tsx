@@ -78,7 +78,7 @@ const BlockPanel = () => {
                   transition: 'all 0.2s ease',
                   border: '1px solid rgba(255, 255, 255, 0.1)',
                   backdropFilter: 'blur(8px)',
-                  boxShadow: 'var(--shadow-2);',
+                  boxShadow: 'var(--shadow-2)',
                 }}
                 onMouseDown={(e) => {
                   e.currentTarget.style.cursor = 'grabbing';

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Plus, Trash2, AlertCircle } from 'lucide-react';
+import { validateFormNodeConfig } from '@/validation/forms/FormNodeConfig';
 
 // Type definitions
 type FieldType = 'text' | 'email' | 'number';
@@ -48,22 +49,7 @@ const FormNodeConfig: React.FC<FormNodeConfigProps> = ({ node, onSave }) => {
   };
 
   const validateForm = (): boolean => {
-    const newErrors: ValidationErrors = {};
-
-    if (!nodeName.trim()) {
-      newErrors.nodeName = 'Node name is required';
-    }
-
-    if (fields.length === 0) {
-      newErrors.fields = 'At least one field must be configured';
-    }
-
-    fields.forEach((field) => {
-      if (!field.name.trim()) {
-        newErrors[`field_${field.id}_name`] = 'Field name is required';
-      }
-    });
-
+    const newErrors = validateFormNodeConfig(nodeName, fields);
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };

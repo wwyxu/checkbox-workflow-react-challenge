@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useRef } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import {
   ReactFlow,
   MiniMap,
@@ -15,7 +15,7 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
-import { Box, Button, Card, Flex, Heading, AlertDialog, Text } from '@radix-ui/themes';
+import { Box, Button, Card, Flex, Heading, Text } from '@radix-ui/themes';
 import { Save } from 'lucide-react';
 
 import StartNode from './nodes/StartNode';
@@ -29,6 +29,8 @@ import Modal from './common/Modal';
 import APINodeConfig from './formconfig/ApiNodeConfig';
 import FormNodeConfig from './formconfig/FormNodeConfig';
 
+const LOCAL_STORAGE_KEY = 'workflow-editor-config';
+
 const nodeTypes = {
   start: StartNode,
   form: FormNode,
@@ -40,18 +42,36 @@ const nodeTypes = {
 const initialNodes: Node[] = [];
 const initialEdges: Edge[] = [];
 
-let nodeId = 0;
+const getInitialData = () => {
+  try {
+    const data = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (data) {
+      const parsed = JSON.parse(data);
+
+      // Check for valid structure
+      if (parsed && Array.isArray(parsed.nodes) && Array.isArray(parsed.edges)) {
+        return {
+          nodes: parsed.nodes,
+          edges: parsed.edges,
+        };
+      }
+    }
+  } catch (e) {
+    console.error('Failed to load workflow from localStorage:', e);
+  }
+  return {
+    nodes: initialNodes,
+    edges: initialEdges,
+  };
+};
 
 const WorkflowEditorInner = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [workflowErrors, setWorkflowErrors] = useState<string[]>([]);
   const [showNodeDialog, setShowNodeDialog] = useState(false);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
-
-  console.log(nodes);
-  console.log("BALCAO")
 
   const { screenToFlowPosition } = useReactFlow();
 
@@ -59,6 +79,13 @@ const WorkflowEditorInner = () => {
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
+
+  useEffect(() => {
+    // Load initial data from localStorage
+    const initialData = getInitialData();
+    setNodes(initialData.nodes);
+    setEdges(initialData.edges);
+  }, [setNodes, setEdges]); 
 
   // Handle node click
   const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
@@ -90,9 +117,15 @@ const WorkflowEditorInner = () => {
         y: event.clientY,
       });
 
+      let currentId = 0;
+
+      if (nodes.length > 0) {
+        currentId = Number(nodes[nodes.length - 1].id)
+      }
+
       // Create a new node
       const newNode = {
-        id: `${type}-${nodeId++}`,
+        id: `${currentId + 1}`,
         type,
         position,
         data: {
@@ -105,7 +138,7 @@ const WorkflowEditorInner = () => {
 
       setNodes((nds) => nds.concat(newNode));
     },
-    [screenToFlowPosition, setNodes]
+    [nodes, screenToFlowPosition, setNodes]
   );
 
   // Check for workflow errors
@@ -121,7 +154,13 @@ const WorkflowEditorInner = () => {
     setWorkflowErrors(errors);
   }, [nodes]);
 
+  // Save workflow to localStorage
   const handleSave = () => {
+    if (workflowErrors.length > 0) {
+      alert('Please fix the errors before saving.');
+      return;
+    }
+
     const workflowConfig = {
       nodes: nodes.map((node) => ({
         id: node.id,
@@ -142,9 +181,11 @@ const WorkflowEditorInner = () => {
       },
     };
 
-    console.log('Workflow Configuration:', JSON.stringify(workflowConfig, null, 2));
-
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(workflowConfig));
     setShowSaveDialog(true);
+
+    // For debugging (optional): still log to console
+    console.log('Workflow configuration saved:', workflowConfig);
   };
 
   const handleNodeDialogClose = () => {
@@ -294,7 +335,7 @@ const WorkflowEditorInner = () => {
         onClose={() => setShowSaveDialog(false)}
       >
         <Text size="2">
-          Your workflow configuration has been saved to the browser console. Check the developer console for the complete configuration details.
+          Your workflow configuration has been saved to your browser. You can close and reopen this page to continue editing.
         </Text>
       </Modal>
     </Flex>
