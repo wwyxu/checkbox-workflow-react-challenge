@@ -25,4 +25,4 @@ const validateApiNodeConfig = (nodeName, url) => {
     return newErrors;
 };
 
-export { validateApiNodeConfig };
+export {validateURL, validateApiNodeConfig };

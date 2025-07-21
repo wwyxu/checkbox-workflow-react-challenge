@@ -5,7 +5,6 @@ interface ValidationErrors {
   [key: string]: string | undefined; // For dynamic field error keys like `field_${id}_name`
 }
 
-
 const validateFormNodeConfig = (nodeName, fields) => {
     const newErrors: ValidationErrors = {};
 
