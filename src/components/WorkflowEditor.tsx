@@ -18,6 +18,8 @@ import '@xyflow/react/dist/style.css';
 import { Box, Button, Card, Flex, Heading, Text } from '@radix-ui/themes';
 import { Save } from 'lucide-react';
 
+import { validateApiNodeConfig, validateFormNodeConfig, validateWorkflowPath } from '@/validation';
+
 import StartNode from './nodes/StartNode';
 import FormNode from './nodes/FormNode';
 import ConditionalNode from './nodes/ConditionalNode';
@@ -28,6 +30,8 @@ import moreThanOneInvalid from '@/constants/errors';
 import Modal from './common/Modal';
 import APINodeConfig from './formconfig/ApiNodeConfig';
 import FormNodeConfig from './formconfig/FormNodeConfig';
+import { NodeTypes } from '@/constants';
+import { set } from 'react-hook-form';
 
 const LOCAL_STORAGE_KEY = 'workflow-editor-config';
 
@@ -70,6 +74,7 @@ const WorkflowEditorInner = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [workflowErrors, setWorkflowErrors] = useState<string[]>([]);
+  const [workflowSaveErrors, setWorkflowSaveErrors] = useState<string[]>([]);
   const [showNodeDialog, setShowNodeDialog] = useState(false);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
 
@@ -85,7 +90,7 @@ const WorkflowEditorInner = () => {
     const initialData = getInitialData();
     setNodes(initialData.nodes);
     setEdges(initialData.edges);
-  }, [setNodes, setEdges]); 
+  }, [setNodes, setEdges]);
 
   // Handle node click
   const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
@@ -117,7 +122,7 @@ const WorkflowEditorInner = () => {
         y: event.clientY,
       });
 
-      let currentId = 0;
+      let currentId = -1;
 
       if (nodes.length > 0) {
         currentId = Number(nodes[nodes.length - 1].id)
@@ -130,9 +135,9 @@ const WorkflowEditorInner = () => {
         position,
         data: {
           label: `${type} node`,
-          ...(type === 'form' && { fields: [] }),
-          ...(type === 'conditional' && { conditions: [] }),
-          ...(type === 'api' && { endpoint: '', method: 'GET' }),
+          ...(type === NodeTypes.FORM && { fields: [] }),
+          ...(type === NodeTypes.CONDITIONAL && { conditions: [] }),
+          ...(type === NodeTypes.API && { endpoint: '', method: 'GET' }),
         },
       };
 
@@ -156,7 +161,24 @@ const WorkflowEditorInner = () => {
 
   // Save workflow to localStorage
   const handleSave = () => {
-    if (workflowErrors.length > 0) {
+    let errors = [];
+    
+    for (let i = 0; i < nodes.length; i++) {
+      let node = nodes[i];
+
+      if (node.type === NodeTypes.FORM || node.type === NodeTypes.API) {
+        const formErrors = node.type === NodeTypes.FORM ? validateFormNodeConfig(node.data.label, node.data.fields) : validateApiNodeConfig(node.data.label, node.data.method);
+        if (Object.keys(formErrors).length > 0) {
+          errors.push(`Node ${node.id} : ${Object.values(formErrors).join(', ')}`);
+        }
+      }
+    }
+
+    errors = [ ...errors, ...validateWorkflowPath(nodes, edges) ];
+
+    setWorkflowSaveErrors(errors);
+
+    if (workflowErrors.length > 0 || errors.length > 0) {
       alert('Please fix the errors before saving.');
       return;
     }
@@ -205,10 +227,10 @@ const WorkflowEditorInner = () => {
     if (!selectedNode) return null;
 
     switch (selectedNode.type) {
-      case 'api':
+      case NodeTypes.API:
         return <APINodeConfig node={selectedNode} workflow={nodes} onSave={handleNodeSave} />;
 
-      case 'form':
+      case NodeTypes.FORM:
         return <FormNodeConfig node={selectedNode} onSave={handleNodeSave} />;
 
       default:
@@ -262,10 +284,10 @@ const WorkflowEditorInner = () => {
         {/* Workflow Canvas */}
         <Box flexGrow="1" style={{ minHeight: '600px' }}>
           <Card style={{ overflow: 'hidden', height: '100%' }}>
-            {workflowErrors.length > 0 && (
+            {workflowErrors.length > 0 || workflowSaveErrors.length > 0 && (
               <Box p="2" style={{ backgroundColor: '#fef2f2', borderBottom: '1px solid #fecaca' }}>
                 <Text size="2" color="red">
-                  Workflow Errors: {workflowErrors.join(', ')}
+                  Workflow Errors: {[...workflowErrors, ...workflowSaveErrors].join(', ')}
                 </Text>
               </Box>
             )}
@@ -295,15 +317,15 @@ const WorkflowEditorInner = () => {
                 style={{ backgroundColor: 'white', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                 nodeColor={(node) => {
                   switch (node.type) {
-                    case 'start':
+                    case NodeTypes.START:
                       return '#10b981';
-                    case 'form':
+                    case NodeTypes.FORM:
                       return '#3b82f6';
-                    case 'conditional':
+                    case NodeTypes.CONDITIONAL:
                       return '#f59e0b';
-                    case 'api':
+                    case NodeTypes.API:
                       return '#a855f7';
-                    case 'end':
+                    case NodeTypes.END:
                       return '#ef4444';
                     default:
                       return '#6b7280';
