@@ -9,6 +9,7 @@ export declare namespace Models {
     export interface ValidationErrors {
         nodeName?: string;
         url?: string;
+        httpMethod?: string;
     }
 
     // API Node data, supporting GET/POST and request body

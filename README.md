@@ -74,3 +74,5 @@ src/
 │   └── NotFound.tsx
 └── main.tsx
 ```
+
+## Tradeoffs

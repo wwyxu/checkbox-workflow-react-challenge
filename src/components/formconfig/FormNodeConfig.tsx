@@ -1,6 +1,19 @@
 import React, { useState } from 'react';
 import { Plus, Trash2, AlertCircle } from 'lucide-react';
 import { validateFormNodeConfig } from '@/validation/forms/FormNodeConfig';
+import {
+  Box,
+  Flex,
+  Grid,
+  Text,
+  TextField,
+  Select,
+  Checkbox,
+  Button,
+  Callout,
+  Separator,
+  Theme,
+} from '@radix-ui/themes';
 
 // Type definitions
 type FieldType = 'text' | 'email' | 'number';
@@ -34,19 +47,21 @@ const FormNodeConfig: React.FC<FormNodeConfigProps> = ({ node, onSave, onClose }
       id: `f${Date.now()}`,
       name: '',
       type: 'text',
-      required: false
+      required: false,
     };
     setFields([...fields, newField]);
   };
 
   const removeField = (fieldId: string): void => {
-    setFields(fields.filter(field => field.id !== fieldId));
+    setFields(fields.filter((field) => field.id !== fieldId));
   };
 
   const updateField = (fieldId: string, updates: Partial<Field>): void => {
-    setFields(fields.map(field =>
-      field.id === fieldId ? { ...field, ...updates } : field
-    ));
+    setFields(
+      fields.map((field) =>
+        field.id === fieldId ? { ...field, ...updates } : field
+      )
+    );
   };
 
   const validateForm = (): boolean => {
@@ -62,130 +77,146 @@ const FormNodeConfig: React.FC<FormNodeConfigProps> = ({ node, onSave, onClose }
         data: {
           ...node.data,
           name: nodeName,
-          fields: fields
-        }
+          fields: fields,
+        },
       });
     }
   };
 
   return (
-    <>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Node Name</label>
-        <input
-          type="text"
-          value={nodeName}
-          onChange={(e) => setNodeName(e.target.value)}
-          className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${errors.nodeName ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-            }`}
-          placeholder="Enter node name"
-        />
-        {errors.nodeName && (
-          <p className="text-red-600 text-sm mt-1 flex items-center gap-1">
-            <AlertCircle size={12} />
-            {errors.nodeName}
-          </p>
-        )}
-      </div>
+    <Theme>
+      <Box>
+        {/* Node Name */}
+        <Box mb="4">
+          <Text as="label" size="2" weight="medium" mb="1" htmlFor="nodeName">
+            Node Name
+          </Text>
+          <TextField.Root
+            id="nodeName"
+            value={nodeName}
+            onChange={(e) => setNodeName(e.target.value)}
+            placeholder="Enter node name"
+            variant={errors.nodeName ? "surface" : undefined}
+            color={errors.nodeName ? "red" : undefined}
+          />
+          {errors.nodeName && (
+            <Callout.Root color="red" mt="2">
+              <Callout.Icon>
+                <AlertCircle size={16} />
+              </Callout.Icon>
+              <Callout.Text>{errors.nodeName}</Callout.Text>
+            </Callout.Root>
+          )}
+        </Box>
 
-      <div>
-        <div className="flex items-end justify-between mb-2 mt-2">
-          <label className="block text-sm font-medium text-gray-700">Fields</label>
-          <button
-            onClick={addField}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
-          >
-            <Plus size={16} />
+        {/* Fields Header & Add Field */}
+        <Flex align="end" justify="between" mb="2" mt="2">
+          <Text as="label" size="2" weight="medium">
+            Fields
+          </Text>
+          <Button color="blue" onClick={addField} variant="solid">
+            <Plus size={16} style={{ marginRight: 4 }} />
             Add Field
-          </button>
-        </div>
+          </Button>
+        </Flex>
 
         {errors.fields && (
-          <div className="flex items-center gap-2 mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <AlertCircle size={16} className="text-red-500 flex-shrink-0" />
-            <p className="text-red-700 text-sm">{errors.fields}</p>
-          </div>
+          <Callout.Root color="red" mb="4">
+            <Callout.Icon>
+              <AlertCircle size={16} />
+            </Callout.Icon>
+            <Callout.Text>{errors.fields}</Callout.Text>
+          </Callout.Root>
         )}
 
-        <div className="space-y-4">
+        <Flex direction="column" gap="4">
           {fields.map((field, index) => (
-            <div key={field.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className="font-medium text-gray-900">Field {index + 1}</h4>
-                <button
+            <Box key={field.id} p="4" style={{ background: "var(--gray-a2)" }}>
+              <Flex align="center" justify="between" mb="3">
+                <Text weight="medium" color="gray">
+                  Field {index + 1}
+                </Text>
+                <Button
+                  color="red"
+                  variant="ghost"
+                  size="1"
                   onClick={() => removeField(field.id)}
-                  className="text-red-500 hover:text-red-700 p-1 rounded-lg hover:bg-red-50 transition-colors"
                   aria-label={`Remove field ${index + 1}`}
                 >
                   <Trash2 size={16} />
-                </button>
-              </div>
+                </Button>
+              </Flex>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Field Name</label>
-                  <input
-                    type="text"
+              <Grid columns={{ initial: "1", md: "2" }} gap="4">
+                <Box>
+                  <Text as="label" size="2" weight="medium" htmlFor={`field_${field.id}_name`} mb="1">
+                    Field Name
+                  </Text>
+                  <TextField.Root
+                    id={`field_${field.id}_name`}
                     value={field.name}
                     onChange={(e) => updateField(field.id, { name: e.target.value })}
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${errors[`field_${field.id}_name`] ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white hover:border-gray-400'
-                      }`}
                     placeholder="Enter field name"
+                    variant={errors[`field_${field.id}_name`] ? "surface" : undefined}
+                    color={errors[`field_${field.id}_name`] ? "red" : undefined}
                   />
                   {errors[`field_${field.id}_name`] && (
-                    <p className="text-red-600 text-sm mt-1 flex items-center gap-1">
-                      <AlertCircle size={12} />
-                      {errors[`field_${field.id}_name`]}
-                    </p>
+                    <Callout.Root color="red" mt="2">
+                      <Callout.Icon>
+                        <AlertCircle size={12} />
+                      </Callout.Icon>
+                      <Callout.Text>{errors[`field_${field.id}_name`]}</Callout.Text>
+                    </Callout.Root>
                   )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Field Type</label>
-                  <select
-                    value={field.type}
-                    onChange={(e) => updateField(field.id, { type: e.target.value as FieldType })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white transition-colors"
-                  >
-                    <option value="text">Text</option>
-                    <option value="email">Email</option>
-                    <option value="number">Number</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="mt-3">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={field.required}
-                    onChange={(e) => updateField(field.id, { required: e.target.checked })}
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  />
-                  <span className="text-sm text-gray-700">Required field</span>
-                </label>
-              </div>
-            </div>
+                </Box>
+                <Box>
+                  <Flex direction="column" gap="1">
+                    <Text as="label" size="2" weight="medium" htmlFor={`field_${field.id}_type`}>
+                      Field Type
+                    </Text>
+                    <Select.Root
+                      value={field.type}
+                      onValueChange={(v) => updateField(field.id, { type: v as FieldType })}
+                    >
+                      <Select.Trigger id={`field_${field.id}_type`} />
+                      <Select.Content>
+                        <Select.Item value="text">Text</Select.Item>
+                        <Select.Item value="email">Email</Select.Item>
+                        <Select.Item value="number">Number</Select.Item>
+                      </Select.Content>
+                    </Select.Root>
+                  </Flex>
+                </Box>
+              </Grid>
+              <Flex align="center" mt="3">
+                <Checkbox
+                  checked={field.required}
+                  onCheckedChange={(checked) =>
+                    updateField(field.id, { required: !!checked })
+                  }
+                  id={`field_${field.id}_required`}
+                  mr="2"
+                />
+                <Text as="label" size="2" htmlFor={`field_${field.id}_required`}>
+                  Required field
+                </Text>
+              </Flex>
+            </Box>
           ))}
-        </div>
-      </div>
+        </Flex>
 
-      <div className="flex justify-end gap-3 pt-2 border-t border-gray-200">
-        <button
-          onClick={handleSave}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium"
-        >
-          Save
-        </button>
+        <Separator my="4" size="4" />
 
-        <button
-          onClick={onClose}
-          className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors shadow-sm font-medium"
-        >
-          Close
-        </button>
-      </div>
-    </>
+        <Flex justify="end" gap="3" pt="2">
+          <Button color="blue" onClick={handleSave}>
+            Save
+          </Button>
+          <Button color="gray" variant="soft" onClick={onClose}>
+            Close
+          </Button>
+        </Flex>
+      </Box>
+    </Theme>
   );
 };
 

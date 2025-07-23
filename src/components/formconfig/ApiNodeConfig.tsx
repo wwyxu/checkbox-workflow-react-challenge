@@ -4,6 +4,19 @@ import { getImmediatePrecedingFormNodes } from '@/utils';
 import { validateApiNodeConfig } from '@/validation/forms/ApiNodeConfig';
 import { AlertCircle } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
+import {
+  Box,
+  Flex,
+  Grid,
+  Text,
+  TextField,
+  Select,
+  Checkbox,
+  Button,
+  Callout,
+  Separator,
+  Theme
+} from '@radix-ui/themes';
 
 const APINodeConfig = ({ node, onSave, nodes, edges, onClose }) => {
   const [nodeName, setNodeName] = useState<string>(node?.data?.label || '');
@@ -12,15 +25,13 @@ const APINodeConfig = ({ node, onSave, nodes, edges, onClose }) => {
   const [selectedFields, setSelectedFields] = useState<string[]>(node?.data?.selectedFields || []);
   const [errors, setErrors] = useState<Models.ValidationErrors>({});
 
-  // Get all fields from Form nodes that come before this API node
   const availableFields = useMemo<Models.FormField[]>(() => {
     const precedingFormNodes = getImmediatePrecedingFormNodes(node.id, nodes, edges);
-
     return precedingFormNodes || [];
   }, [nodes, edges, node.id]);
 
   const validateForm = useCallback((): boolean => {
-    const newErrors: Models.ValidationErrors = validateApiNodeConfig(nodeName, url);
+    const newErrors: Models.ValidationErrors = validateApiNodeConfig(nodeName, httpMethod, url);
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }, [nodeName, url]);
@@ -49,121 +60,158 @@ const APINodeConfig = ({ node, onSave, nodes, edges, onClose }) => {
   }, [validateForm, onSave, node, nodeName, httpMethod, url, selectedFields]);
 
   return (
-    <>
-      {/* Node Name */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Node Name</label>
-        <input
-          type="text"
-          value={nodeName}
-          onChange={(e) => setNodeName(e.target.value)}
-          className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${errors.nodeName ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-            }`}
-          placeholder="Enter node name"
-        />
-        {errors.nodeName && (
-          <p className="text-red-600 text-sm mt-1 flex items-center gap-1">
-            <AlertCircle size={12} />
-            {errors.nodeName}
-          </p>
-        )}
-      </div>
-
-      {/* HTTP Method & URL */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">HTTP Method</label>
-          <select
-            value={httpMethod}
-            onChange={(e) => setHttpMethod(e.target.value as HttpTypes.POST | HttpTypes.PUT)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white transition-colors"
-          >
-            <option value="POST">POST</option>
-            <option value="PUT">PUT</option>
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">URL</label>
-          <input
-            type="url"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${errors.url ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-              }`}
-            placeholder="https://api.example.com/endpoint"
+    <Theme>
+      <Box>
+        {/* Node Name */}
+        <Box mb="4">
+          <Text as="label" size="2" weight="medium" mb="1" htmlFor="nodeName">
+            Node Name
+          </Text>
+          <TextField.Root
+            id="nodeName"
+            value={nodeName}
+            onChange={(e) => setNodeName(e.target.value)}
+            placeholder="Enter node name"
+            variant={errors.nodeName ? "surface" : undefined}
+            color={errors.nodeName ? "red" : undefined}
           />
-          {errors.url && (
-            <p className="text-red-600 text-sm mt-1 flex items-center gap-1">
-              <AlertCircle size={12} />
-              {errors.url}
-            </p>
+          {errors.nodeName && (
+            <Callout.Root color="red" mt="2">
+              <Callout.Icon>
+                <AlertCircle size={16} />
+              </Callout.Icon>
+              <Callout.Text>{errors.nodeName}</Callout.Text>
+            </Callout.Root>
           )}
-        </div>
-      </div>
+        </Box>
 
-      {/* Request Body Fields */}
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700 mb-3">Request Body Fields</label>
-        <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-          {availableFields.length === 0 ? (
-            <div className="text-center py-8">
-              <div className="text-gray-400 mb-2">
-                <AlertCircle size={24} className="mx-auto" />
-              </div>
-              <p className="text-gray-500 text-sm">No form fields available. Add Form nodes to the nodes first.</p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {availableFields.map(field => (
-                <label
-                  key={`${field.nodeId}-${field.id}`}
-                  className="flex items-center gap-3 p-3 hover:bg-white rounded-lg cursor-pointer transition-colors border border-transparent hover:border-gray-200"
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedFields.includes(field.id)}
-                    onChange={() => handleFieldToggle(field.id)}
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-medium text-gray-900">{field.name}</span>
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        {field.type}
-                      </span>
-                      {field.required && (
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                          Required
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1">From: {field.nodeName}</p>
-                  </div>
-                </label>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
+        {/* HTTP Method & URL */}
+        <Grid columns={{ initial: "1", md: "2" }} gap="2" mb="4">
+          <Box>
+            <Flex direction="column" gap="1">
+              <Text as="label" size="2" weight="medium" htmlFor="httpMethod">
+                HTTP Method
+              </Text>
+              <Select.Root
+                value={httpMethod}
+                onValueChange={(v) => setHttpMethod(v as HttpTypes.POST | HttpTypes.PUT)}
+              >
+                <Select.Trigger id="httpMethod" />
+                <Select.Content>
+                  <Select.Item value={HttpTypes.POST}>POST</Select.Item>
+                  <Select.Item value={HttpTypes.PUT}>PUT</Select.Item>
+                </Select.Content>
+              </Select.Root>
+              {errors.httpMethod && (
+                <Callout.Root color="red" mt="2">
+                  <Callout.Icon>
+                    <AlertCircle size={16} />
+                  </Callout.Icon>
+                  <Callout.Text>{errors.httpMethod}</Callout.Text>
+                </Callout.Root>
+              )}
+            </Flex>
+          </Box>
+          <Box>
+            <Flex direction="column" gap="1">
+              <Text as="label" size="2" weight="medium" htmlFor="url">
+                URL
+              </Text>
+              <TextField.Root
+                id="url"
+                value={url}
+                type="url"
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="https://api.example.com/endpoint"
+                variant={errors.url ? "surface" : undefined}
+                color={errors.url ? "red" : undefined}
+              />
+              {errors.url && (
+                <Callout.Root color="red" mt="2">
+                  <Callout.Icon>
+                    <AlertCircle size={16} />
+                  </Callout.Icon>
+                  <Callout.Text>{errors.url}</Callout.Text>
+                </Callout.Root>
+              )}
+            </Flex>
+          </Box>
+        </Grid>
 
-      {/* Actions */}
-      <div className="flex justify-end gap-3 pt-2 border-t border-gray-200">
-        <button
-          type="button"
-          onClick={handleSave}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium"
-        >
-          Save
-        </button>
-        <button
-          type="button"
-          onClick={onClose}
-          className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors shadow-sm font-medium"
-        >
-          Close
-        </button>
-      </div>
-    </>
+        {/* Request Body Fields */}
+        <Box mb="4">
+          <Text as="label" size="2" weight="medium" mb="2">
+            Request Body Fields
+          </Text>
+          <Box p="3" style={{ background: "var(--gray-a2)" }}>
+            {availableFields.length === 0 ? (
+              <Flex direction="column" align="center" py="6">
+                <AlertCircle size={24} color="var(--gray-a6)" />
+                <Text color="gray" mt="2" size="2">
+                  No form fields available. Add Form nodes to the nodes first.
+                </Text>
+              </Flex>
+            ) : (
+              <Flex direction="column" gap="2">
+                {availableFields.map(field => (
+                  <Flex
+                    key={`${field.nodeId}-${field.id}`}
+                    align="center"
+                    gap="3"
+                    p="2"
+                    asChild
+                    style={{
+                      cursor: "pointer",
+                      border: "1px solid transparent",
+                    }}
+                  >
+                    <label
+                      htmlFor={`field-${field.id}`}
+                      style={{ width: "100%", display: "flex", alignItems: "center" }}
+                    >
+                      <Checkbox
+                        id={`field-${field.id}`}
+                        checked={selectedFields.includes(field.id)}
+                        onCheckedChange={() => handleFieldToggle(field.id)}
+                        mr="3"
+                      />
+                      <Box minWidth="0">
+                        <Flex align="center" gap="2" wrap="wrap">
+                          <Text weight="medium">{field.name}</Text>
+                          <Text size="1" color="blue" style={{ background: "var(--blue-a3)", borderRadius: '9999px', padding: '2px 8px' }}>
+                            {field.type}
+                          </Text>
+                          {field.required && (
+                            <Text size="1" color="red" style={{ background: "var(--red-a3)", borderRadius: '9999px', padding: '2px 8px' }}>
+                              Required
+                            </Text>
+                          )}
+                        </Flex>
+                        <Text as="p" size="1" color="gray" mt="1">
+                          From: {field.nodeName}
+                        </Text>
+                      </Box>
+                    </label>
+                  </Flex>
+                ))}
+              </Flex>
+            )}
+          </Box>
+        </Box>
+
+        <Separator my="2" size="4" />
+
+        {/* Actions */}
+        <Flex justify="end" gap="3" pt="2">
+          <Button color="blue" onClick={handleSave}>
+            Save
+          </Button>
+          <Button color="gray" variant="soft" onClick={onClose}>
+            Close
+          </Button>
+        </Flex>
+      </Box>
+    </Theme>
   );
 };
 

@@ -1,4 +1,4 @@
-import { NodeTypes } from "@/constants";
+import { HttpTypes, NodeTypes } from "@/constants";
 import { Models } from "@/models";
 
 const validateURL = (url: string): boolean => {
@@ -10,11 +10,15 @@ const validateURL = (url: string): boolean => {
     }
 };
 
-const validateApiNodeConfig = (nodeName, url) => {
+const validateApiNodeConfig = (nodeName, httpMethod, url) => {
     const newErrors: Models.ValidationErrors = {};
 
     if (!nodeName.trim()) {
         newErrors.nodeName = 'Node name is required';
+    }
+
+    if (httpMethod !== HttpTypes.POST || httpMethod !== HttpTypes.PUT) {
+        newErrors.httpMethod = 'Invalid HTTP Method';
     }
 
     if (!url.trim()) {
@@ -32,6 +36,8 @@ function removeSelectedFieldsFromIsolatedApiNodes(nodes, edges) {
     }
 
     const nodesWithIncomingEdges = new Set(edges.map(edge => edge.target));
+
+    console.log(nodes);
 
     return nodes.map(node => {
         if (!nodesWithIncomingEdges.has(node.id) && node.type === NodeTypes.API) {

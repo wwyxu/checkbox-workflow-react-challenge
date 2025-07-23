@@ -68,7 +68,7 @@ const WorkflowEditorInner = () => {
     setNodes(initialNodes || []);
     setEdges(initialEdges || []);
   }, [setNodes, setEdges]);
-  
+
   useEffect(() => {
     const errors: string[] = [];
 
@@ -83,6 +83,14 @@ const WorkflowEditorInner = () => {
 
     setWorkflowErrors(errors);
   }, [nodes]);
+
+  useEffect(() => {
+    if (nodes.length > 0) {
+    const newNodes = removeSelectedFieldsFromIsolatedApiNodes(nodes, edges);
+    console.log('Updated nodes after removing isolated API nodes:', newNodes);
+    setNodes(newNodes);
+    }
+  }, [edges]);
 
   const nextNodeId = useMemo(
     () => nodes?.length ? Math.max(...nodes.map(n => Number(n.id))) + 1 : 0,
