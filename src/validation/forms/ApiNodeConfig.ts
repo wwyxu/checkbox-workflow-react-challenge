@@ -1,3 +1,4 @@
+import { NodeTypes } from "@/constants";
 import { Models } from "@/models";
 
 const validateURL = (url: string): boolean => {
@@ -25,4 +26,26 @@ const validateApiNodeConfig = (nodeName, url) => {
     return newErrors;
 };
 
-export {validateURL, validateApiNodeConfig };
+function removeSelectedFieldsFromIsolatedApiNodes(nodes, edges) {
+    if (!Array.isArray(nodes) || !Array.isArray(edges)) {
+        return [];
+    }
+
+    const nodesWithIncomingEdges = new Set(edges.map(edge => edge.target));
+
+    return nodes.map(node => {
+        if (!nodesWithIncomingEdges.has(node.id) && node.type === NodeTypes.API) {
+            return {
+                ...node,
+                data: {
+                    ...node.data,
+                    selectedFields: undefined
+                }
+            };
+        }
+
+        return node;
+    });
+}
+
+export { validateURL, validateApiNodeConfig, removeSelectedFieldsFromIsolatedApiNodes };

@@ -1,4 +1,4 @@
-import React, { Children } from 'react';
+import React from 'react';
 import { AlertDialog, Flex, Button } from '@radix-ui/themes';
 
 interface ModalProps {
@@ -8,6 +8,7 @@ interface ModalProps {
     maxWidth?: string;
     onClose?: () => void;
     children?: React.ReactNode;
+    showCloseButton?: boolean;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -17,23 +18,26 @@ const Modal: React.FC<ModalProps> = ({
     maxWidth = '450px',
     onClose,
     children,
+    showCloseButton = false
 }) => {
     return (
         <AlertDialog.Root open={open} onOpenChange={onOpenChange}>
             <AlertDialog.Content style={{ maxWidth }}>
                 <AlertDialog.Title>{title}</AlertDialog.Title>
                 {children}
-                <Flex gap="3" mt="4" justify="end">
-                    <AlertDialog.Cancel>
-                        <Button
-                            variant="soft"
-                            color="gray"
-                            onClick={onClose}
-                        >
-                            Close
-                        </Button>
-                    </AlertDialog.Cancel>
-                </Flex>
+                {showCloseButton && (
+                    <Flex gap="3" mt="4" justify="end">
+                        <AlertDialog.Cancel>
+                            <Button
+                                variant="soft"
+                                color="gray"
+                                onClick={onClose}
+                            >
+                                Close
+                            </Button>
+                        </AlertDialog.Cancel>
+                    </Flex>
+                )}
             </AlertDialog.Content>
         </AlertDialog.Root>
     );

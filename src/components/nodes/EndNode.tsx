@@ -1,9 +1,9 @@
-import React from 'react';
+import { Models } from '@/models';
+import { Box, Flex, Text } from '@radix-ui/themes';
 import { Handle, Position } from '@xyflow/react';
 import { Square } from 'lucide-react';
-import { Box, Text, Flex } from '@radix-ui/themes';
 
-const EndNode = ({ data }: { data: { label?: string } }) => {
+const EndNode = ({ }: { data: Models.EndNodeData }) => {
   return (
     <Box
       px="4"

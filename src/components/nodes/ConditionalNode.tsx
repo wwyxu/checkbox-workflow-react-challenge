@@ -1,18 +1,9 @@
-import React from 'react';
+import { Models } from '@/models';
+import { Box, Flex, Text } from '@radix-ui/themes';
 import { Handle, Position } from '@xyflow/react';
 import { GitBranch } from 'lucide-react';
-import { Box, Text, Flex } from '@radix-ui/themes';
 
-interface ConditionalNodeData {
-  label: string;
-  customName?: string;
-  fieldToEvaluate?: string;
-  operator?: 'equals' | 'not_equals' | 'is_empty';
-  value?: string;
-}
-
-const ConditionalNode = ({ data }: { data: ConditionalNodeData }) => {
-
+const ConditionalNode = ({ data }: { data: Models.ConditionalNodeData }) => {
   return (
     <Box
       px="4"

@@ -1,18 +1,9 @@
-import React from 'react';
+import { Models } from '@/models';
+import { Box, Flex, Text } from '@radix-ui/themes';
 import { Handle, Position } from '@xyflow/react';
 import { Globe } from 'lucide-react';
-import { Box, Text, Flex } from '@radix-ui/themes';
 
-interface ApiNodeData {
-  label: string;
-  customName?: string;
-  httpMethod?: 'GET' | 'POST';
-  url?: string;
-  requestBody?: Record<string, string>;
-}
-
-const ApiNode = ({ data }: { data: ApiNodeData }) => {
-
+const ApiNode = ({ data }: { data: Models.ApiNodeData }) => {
   return (
     <Box
       px="4"

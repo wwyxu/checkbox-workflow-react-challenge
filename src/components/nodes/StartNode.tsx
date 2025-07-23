@@ -1,9 +1,9 @@
-import React from 'react';
 import { Handle, Position } from '@xyflow/react';
 import { Play } from 'lucide-react';
 import { Box, Text, Flex } from '@radix-ui/themes';
+import { Models } from '@/models';
 
-const StartNode = ({ data }: { data: { label: string } }) => {
+const StartNode = ({ data }: { data: Models.StartNodeData }) => {
   return (
     <Box
       px="4"

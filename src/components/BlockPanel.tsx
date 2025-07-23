@@ -1,53 +1,53 @@
-import React from 'react';
+import { EVENT_DATA_TRANSFER_KEY } from '@/constants';
 import { Card, Heading, Text, Box, Flex } from '@radix-ui/themes';
 import { Play, FileText, GitBranch, Square, Globe } from 'lucide-react';
 
-const BlockPanel = () => {
-  const blocks = [
-    {
-      id: 'start',
-      name: 'Start Block',
-      icon: Play,
-      description: 'Starting point of the workflow',
-      color: '#10b981',
-      darkColor: '#059669',
-    },
-    {
-      id: 'form',
-      name: 'Form Block',
-      icon: FileText,
-      description: 'User input form',
-      color: '#3b82f6',
-      darkColor: '#2563eb',
-    },
-    {
-      id: 'conditional',
-      name: 'Conditional Block',
-      icon: GitBranch,
-      description: 'Decision point with conditions',
-      color: '#f59e0b',
-      darkColor: '#d97706',
-    },
-    {
-      id: 'api',
-      name: 'API Block',
-      icon: Globe,
-      description: 'Make HTTP API calls',
-      color: '#a855f7',
-      darkColor: '#9333ea',
-    },
-    {
-      id: 'end',
-      name: 'End Block',
-      icon: Square,
-      description: 'End point of the workflow',
-      color: '#ef4444',
-      darkColor: '#dc2626',
-    },
-  ];
+const blocks = [
+  {
+    id: 'start',
+    name: 'Start Block',
+    icon: Play,
+    description: 'Starting point of the workflow',
+    color: '#10b981',
+    darkColor: '#059669',
+  },
+  {
+    id: 'form',
+    name: 'Form Block',
+    icon: FileText,
+    description: 'User input form',
+    color: '#3b82f6',
+    darkColor: '#2563eb',
+  },
+  {
+    id: 'conditional',
+    name: 'Conditional Block',
+    icon: GitBranch,
+    description: 'Decision point with conditions',
+    color: '#f59e0b',
+    darkColor: '#d97706',
+  },
+  {
+    id: 'api',
+    name: 'API Block',
+    icon: Globe,
+    description: 'Make HTTP API calls',
+    color: '#a855f7',
+    darkColor: '#9333ea',
+  },
+  {
+    id: 'end',
+    name: 'End Block',
+    icon: Square,
+    description: 'End point of the workflow',
+    color: '#ef4444',
+    darkColor: '#dc2626',
+  },
+];
 
+const BlockPanel = () => {
   const onDragStart = (event, nodeType) => {
-    event.dataTransfer.setData('application/reactflow', nodeType);
+    event.dataTransfer.setData(EVENT_DATA_TRANSFER_KEY, nodeType);
     event.dataTransfer.effectAllowed = 'move';
   };
 

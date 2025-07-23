@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Plus, Trash2, AlertCircle } from 'lucide-react';
 import { validateFormNodeConfig } from '@/validation/forms/FormNodeConfig';
 
@@ -15,15 +15,16 @@ interface Field {
 interface FormNodeConfigProps {
   node?: any;
   onSave: (node: any) => void;
+  onClose: () => void;
 }
 
 interface ValidationErrors {
   nodeName?: string;
   fields?: string;
-  [key: string]: string | undefined; // For dynamic field error keys like `field_${id}_name`
+  [key: string]: string | undefined;
 }
 
-const FormNodeConfig: React.FC<FormNodeConfigProps> = ({ node, onSave }) => {
+const FormNodeConfig: React.FC<FormNodeConfigProps> = ({ node, onSave, onClose }) => {
   const [nodeName, setNodeName] = useState<string>(node?.data.name || '');
   const [fields, setFields] = useState<Field[]>(node?.data.fields || []);
   const [errors, setErrors] = useState<ValidationErrors>({});
@@ -68,16 +69,15 @@ const FormNodeConfig: React.FC<FormNodeConfigProps> = ({ node, onSave }) => {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Node Name</label>
         <input
           type="text"
           value={nodeName}
           onChange={(e) => setNodeName(e.target.value)}
-          className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-            errors.nodeName ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
-          }`}
+          className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${errors.nodeName ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-gray-400'
+            }`}
           placeholder="Enter node name"
         />
         {errors.nodeName && (
@@ -89,7 +89,7 @@ const FormNodeConfig: React.FC<FormNodeConfigProps> = ({ node, onSave }) => {
       </div>
 
       <div>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-end justify-between mb-2 mt-2">
           <label className="block text-sm font-medium text-gray-700">Fields</label>
           <button
             onClick={addField}
@@ -128,9 +128,8 @@ const FormNodeConfig: React.FC<FormNodeConfigProps> = ({ node, onSave }) => {
                     type="text"
                     value={field.name}
                     onChange={(e) => updateField(field.id, { name: e.target.value })}
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                      errors[`field_${field.id}_name`] ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white hover:border-gray-400'
-                    }`}
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${errors[`field_${field.id}_name`] ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white hover:border-gray-400'
+                      }`}
                     placeholder="Enter field name"
                   />
                   {errors[`field_${field.id}_name`] && (
@@ -171,15 +170,22 @@ const FormNodeConfig: React.FC<FormNodeConfigProps> = ({ node, onSave }) => {
         </div>
       </div>
 
-      <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+      <div className="flex justify-end gap-3 pt-2 border-t border-gray-200">
         <button
           onClick={handleSave}
           className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm font-medium"
         >
           Save
         </button>
+
+        <button
+          onClick={onClose}
+          className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors shadow-sm font-medium"
+        >
+          Close
+        </button>
       </div>
-    </div>
+    </>
   );
 };
 

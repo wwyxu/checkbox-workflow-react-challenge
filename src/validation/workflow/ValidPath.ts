@@ -1,4 +1,3 @@
-
 function validateWorkflowPath(nodes, edges) {
   const errors = [];
   // Find start and end nodes

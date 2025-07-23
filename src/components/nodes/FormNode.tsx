@@ -1,22 +1,9 @@
-import React from 'react';
+import { Models } from '@/models';
+import { Box, Flex, Text } from '@radix-ui/themes';
 import { Handle, Position } from '@xyflow/react';
 import { FileText } from 'lucide-react';
-import { Box, Text, Flex } from '@radix-ui/themes';
 
-interface FormField {
-  id: string;
-  name: string;
-  type: 'text' | 'email' | 'number';
-  required: boolean;
-}
-
-interface FormNodeData {
-  label: string;
-  customName?: string;
-  fields?: FormField[];
-}
-
-const FormNode = ({ data }: { data: FormNodeData }) => {
+const FormNode = ({ data }: { data: Models.FormNodeData }) => {
 
   return (
     <Box
