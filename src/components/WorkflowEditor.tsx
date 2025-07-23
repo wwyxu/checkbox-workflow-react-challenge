@@ -215,37 +215,34 @@ const WorkflowEditorInner = () => {
         </Box>
       </Flex>
 
-      {/* Node Details Modal */}
-      <Modal
-        open={showNodeDialog}
-        title={selectedNode ? `${selectedNode.type} Node Details` : 'Node Details'}
-        onOpenChange={setShowNodeDialog}
-      >
-        {selectedNode && (
-          <>
-            {selectedNode.type === NodeTypes.API ? (
-              <APINodeConfig
-                node={selectedNode}
-                nodes={nodes}
-                edges={edges}
-                onSave={handleNodeSave}
-                onClose={handleNodeDialogClose}
-              />
-            ) : selectedNode.type === NodeTypes.FORM ? (
-              <FormNodeConfig
-                node={selectedNode}
-                onSave={handleNodeSave}
-                onClose={handleNodeDialogClose}
-              />
-            ) : (
-              <NodeDetails
-                node={selectedNode}
-                onClose={handleNodeDialogClose}
-              />
-            )}
-          </>
-        )}
-      </Modal>
+      {selectedNode && (
+        <Modal
+          open={showNodeDialog}
+          title={selectedNode ? `${selectedNode.type} Node Details` : 'Node Details'}
+          onOpenChange={setShowNodeDialog}
+        >
+          {selectedNode.type === NodeTypes.API ? (
+            <APINodeConfig
+              node={selectedNode}
+              nodes={nodes}
+              edges={edges}
+              onSave={handleNodeSave}
+              onClose={handleNodeDialogClose}
+            />
+          ) : selectedNode.type === NodeTypes.FORM ? (
+            <FormNodeConfig
+              node={selectedNode}
+              onSave={handleNodeSave}
+              onClose={handleNodeDialogClose}
+            />
+          ) : (
+            <NodeDetails
+              node={selectedNode}
+              onClose={handleNodeDialogClose}
+            />
+          )}
+        </Modal>
+      )}
 
       {/* Save Dialog Modal */}
       <Modal
