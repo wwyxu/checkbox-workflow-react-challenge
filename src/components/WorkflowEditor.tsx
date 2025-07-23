@@ -5,7 +5,6 @@ import {
   Controls,
   MiniMap,
   Node,
-  Edge,
   ReactFlow,
   ReactFlowProvider,
   useEdgesState,
@@ -25,15 +24,11 @@ import { EVENT_DATA_TRANSFER_KEY, ModalTypes, NodeTypes } from '@/constants';
 
 import BlockPanel from './BlockPanel';
 import Modal from './common/Modal';
-import APINodeConfig from './nodemodal/ApiNodeConfig';
-import FormNodeConfig from './nodemodal/FormNodeConfig';
-import NodeDetails from './nodemodal/DefaultNodeConfig';
 import ApiNode from './nodes/ApiNode';
 import ConditionalNode from './nodes/ConditionalNode';
 import EndNode from './nodes/EndNode';
 import FormNode from './nodes/FormNode';
 import StartNode from './nodes/StartNode';
-import { ModalFooter } from './nodemodal/common/ModalFooter';
 import WorkflowModal from './WorkflowModal';
 
 const nodeTypes = {
@@ -218,7 +213,6 @@ const WorkflowEditorInner = () => {
         </Box>
       </Flex>
 
-      {/* Single Modal for both node and save dialogs */}
       <Modal
         open={modalOpen}
         title={modalTitle}

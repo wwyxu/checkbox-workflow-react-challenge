@@ -2,22 +2,20 @@ import { HttpTypes } from '@/constants';
 import { Models } from '@/models';
 import { getImmediatePrecedingFormNodes } from '@/utils';
 import { validateApiNodeConfig } from '@/validation/forms/ApiNodeConfig';
-import { AlertCircle } from 'lucide-react';
-import { useCallback, useMemo, useState } from 'react';
-import { ModalFooter } from './common/ModalFooter';
 import {
   Box,
+  Checkbox,
   Flex,
   Grid,
+  Select,
   Text,
   TextField,
-  Select,
-  Checkbox,
-  Button,
-  Separator,
   Theme
 } from '@radix-ui/themes';
+import { AlertCircle } from 'lucide-react';
+import { useCallback, useMemo, useState } from 'react';
 import { ErrorAlert } from './common/ErrorAlert';
+import { ModalFooter } from './common/ModalFooter';
 
 const APINodeConfig = ({ node, onSave, nodes, edges, onClose }) => {
   const [nodeName, setNodeName] = useState<string>(node?.data?.label || '');
@@ -137,7 +135,7 @@ const APINodeConfig = ({ node, onSave, nodes, edges, onClose }) => {
           ) : (
             <Flex direction="column" gap="2">
               {availableFields.map(field => (
-                <Box key={field.id} p="4" style={{ background: "var(--gray-a2)" }}>
+                <Box key={field.id} p="4" style={{ background: "var(--gray-a2)", cursor: "pointer" }}>
                   <Flex
                     key={`${field.nodeId}-${field.id}`}
                     align="center"
@@ -145,6 +143,7 @@ const APINodeConfig = ({ node, onSave, nodes, edges, onClose }) => {
                     p="2"
                     m="2"
                     asChild
+                    style={{ cursor: "pointer" }}
                   >
                     <label
                       htmlFor={`field-${field.id}`}

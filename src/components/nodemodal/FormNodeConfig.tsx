@@ -1,21 +1,19 @@
-import React, { useState } from 'react';
-import { Plus, Trash2, AlertCircle } from 'lucide-react';
 import { validateFormNodeConfig } from '@/validation/forms/FormNodeConfig';
-import { ModalFooter } from './common/ModalFooter';
 import {
   Box,
+  Button,
+  Checkbox,
   Flex,
   Grid,
+  Select,
   Text,
   TextField,
-  Select,
-  Checkbox,
-  Button,
-  Callout,
-  Separator,
-  Theme,
+  Theme
 } from '@radix-ui/themes';
+import { Plus, Trash2 } from 'lucide-react';
+import React, { useState } from 'react';
 import { ErrorAlert } from './common/ErrorAlert';
+import { ModalFooter } from './common/ModalFooter';
 
 // Type definitions
 type FieldType = 'text' | 'email' | 'number';
