@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Trash2, AlertCircle } from 'lucide-react';
 import { validateFormNodeConfig } from '@/validation/forms/FormNodeConfig';
+import { ModalFooter } from './common/ModalFooter';
 import {
   Box,
   Flex,
@@ -14,6 +15,7 @@ import {
   Separator,
   Theme,
 } from '@radix-ui/themes';
+import { ErrorAlert } from './common/ErrorAlert';
 
 // Type definitions
 type FieldType = 'text' | 'email' | 'number';
@@ -96,17 +98,10 @@ const FormNodeConfig: React.FC<FormNodeConfigProps> = ({ node, onSave, onClose }
             value={nodeName}
             onChange={(e) => setNodeName(e.target.value)}
             placeholder="Enter node name"
-            variant={errors.nodeName ? "surface" : undefined}
-            color={errors.nodeName ? "red" : undefined}
           />
-          {errors.nodeName && (
-            <Callout.Root color="red" mt="2">
-              <Callout.Icon>
-                <AlertCircle size={16} />
-              </Callout.Icon>
-              <Callout.Text>{errors.nodeName}</Callout.Text>
-            </Callout.Root>
-          )}
+          {errors.nodeName &&
+            <ErrorAlert>{errors.nodeName}</ErrorAlert>
+          }
         </Box>
 
         {/* Fields Header & Add Field */}
@@ -119,15 +114,6 @@ const FormNodeConfig: React.FC<FormNodeConfigProps> = ({ node, onSave, onClose }
             Add Field
           </Button>
         </Flex>
-
-        {errors.fields && (
-          <Callout.Root color="red" mb="4">
-            <Callout.Icon>
-              <AlertCircle size={16} />
-            </Callout.Icon>
-            <Callout.Text>{errors.fields}</Callout.Text>
-          </Callout.Root>
-        )}
 
         <Flex direction="column" gap="4">
           {fields.map((field, index) => (
@@ -157,16 +143,9 @@ const FormNodeConfig: React.FC<FormNodeConfigProps> = ({ node, onSave, onClose }
                     value={field.name}
                     onChange={(e) => updateField(field.id, { name: e.target.value })}
                     placeholder="Enter field name"
-                    variant={errors[`field_${field.id}_name`] ? "surface" : undefined}
-                    color={errors[`field_${field.id}_name`] ? "red" : undefined}
                   />
                   {errors[`field_${field.id}_name`] && (
-                    <Callout.Root color="red" mt="2">
-                      <Callout.Icon>
-                        <AlertCircle size={12} />
-                      </Callout.Icon>
-                      <Callout.Text>{errors[`field_${field.id}_name`]}</Callout.Text>
-                    </Callout.Root>
+                    <ErrorAlert>{errors[`field_${field.id}_name`]}</ErrorAlert>
                   )}
                 </Box>
                 <Box>
@@ -205,16 +184,14 @@ const FormNodeConfig: React.FC<FormNodeConfigProps> = ({ node, onSave, onClose }
           ))}
         </Flex>
 
-        <Separator my="4" size="4" />
+        {errors.fields &&
+          <ErrorAlert>{errors.fields}</ErrorAlert>
+        }
 
-        <Flex justify="end" gap="3" pt="2">
-          <Button color="blue" onClick={handleSave}>
-            Save
-          </Button>
-          <Button color="gray" variant="soft" onClick={onClose}>
-            Close
-          </Button>
-        </Flex>
+        <ModalFooter
+          onSave={handleSave}
+          onClose={onClose}
+        />
       </Box>
     </Theme>
   );

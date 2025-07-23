@@ -9,7 +9,7 @@ const validateForms = (nodes) => {
         let node = nodes[i];
 
         if (node.type === NodeTypes.FORM || node.type === NodeTypes.API) {
-            const formErrors = node.type === NodeTypes.FORM ? validateFormNodeConfig(node.data.label, node.data.fields) : validateApiNodeConfig(node.data.label, node.data.endpoint);
+            const formErrors = node.type === NodeTypes.FORM ? validateFormNodeConfig(node.data.label, node.data.fields) : validateApiNodeConfig(node.data.label, node.data.method, node.data.endpoint);
             if (Object.keys(formErrors).length > 0) {
                 errors.push(`Node ${node.id} : ${Object.values(formErrors).join(', ')}`);
             }

@@ -17,7 +17,7 @@ const validateApiNodeConfig = (nodeName, httpMethod, url) => {
         newErrors.nodeName = 'Node name is required';
     }
 
-    if (httpMethod !== HttpTypes.POST || httpMethod !== HttpTypes.PUT) {
+    if (httpMethod.trim() !== HttpTypes.POST && httpMethod.trim() !== HttpTypes.PUT) {
         newErrors.httpMethod = 'Invalid HTTP Method';
     }
 
@@ -36,8 +36,6 @@ function removeSelectedFieldsFromIsolatedApiNodes(nodes, edges) {
     }
 
     const nodesWithIncomingEdges = new Set(edges.map(edge => edge.target));
-
-    console.log(nodes);
 
     return nodes.map(node => {
         if (!nodesWithIncomingEdges.has(node.id) && node.type === NodeTypes.API) {

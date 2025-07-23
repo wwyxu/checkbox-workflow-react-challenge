@@ -4,6 +4,7 @@ import { getImmediatePrecedingFormNodes } from '@/utils';
 import { validateApiNodeConfig } from '@/validation/forms/ApiNodeConfig';
 import { AlertCircle } from 'lucide-react';
 import { useCallback, useMemo, useState } from 'react';
+import { ModalFooter } from './common/ModalFooter';
 import {
   Box,
   Flex,
@@ -13,10 +14,10 @@ import {
   Select,
   Checkbox,
   Button,
-  Callout,
   Separator,
   Theme
 } from '@radix-ui/themes';
+import { ErrorAlert } from './common/ErrorAlert';
 
 const APINodeConfig = ({ node, onSave, nodes, edges, onClose }) => {
   const [nodeName, setNodeName] = useState<string>(node?.data?.label || '');
@@ -72,16 +73,9 @@ const APINodeConfig = ({ node, onSave, nodes, edges, onClose }) => {
             value={nodeName}
             onChange={(e) => setNodeName(e.target.value)}
             placeholder="Enter node name"
-            variant={errors.nodeName ? "surface" : undefined}
-            color={errors.nodeName ? "red" : undefined}
           />
           {errors.nodeName && (
-            <Callout.Root color="red" mt="2">
-              <Callout.Icon>
-                <AlertCircle size={16} />
-              </Callout.Icon>
-              <Callout.Text>{errors.nodeName}</Callout.Text>
-            </Callout.Root>
+            <ErrorAlert>{errors.nodeName}</ErrorAlert>
           )}
         </Box>
 
@@ -103,12 +97,7 @@ const APINodeConfig = ({ node, onSave, nodes, edges, onClose }) => {
                 </Select.Content>
               </Select.Root>
               {errors.httpMethod && (
-                <Callout.Root color="red" mt="2">
-                  <Callout.Icon>
-                    <AlertCircle size={16} />
-                  </Callout.Icon>
-                  <Callout.Text>{errors.httpMethod}</Callout.Text>
-                </Callout.Root>
+                <ErrorAlert>{errors.httpMethod}</ErrorAlert>
               )}
             </Flex>
           </Box>
@@ -123,16 +112,9 @@ const APINodeConfig = ({ node, onSave, nodes, edges, onClose }) => {
                 type="url"
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="https://api.example.com/endpoint"
-                variant={errors.url ? "surface" : undefined}
-                color={errors.url ? "red" : undefined}
               />
               {errors.url && (
-                <Callout.Root color="red" mt="2">
-                  <Callout.Icon>
-                    <AlertCircle size={16} />
-                  </Callout.Icon>
-                  <Callout.Text>{errors.url}</Callout.Text>
-                </Callout.Root>
+                <ErrorAlert>{errors.url}</ErrorAlert>
               )}
             </Flex>
           </Box>
@@ -143,27 +125,26 @@ const APINodeConfig = ({ node, onSave, nodes, edges, onClose }) => {
           <Text as="label" size="2" weight="medium" mb="2">
             Request Body Fields
           </Text>
-          <Box p="3" style={{ background: "var(--gray-a2)" }}>
-            {availableFields.length === 0 ? (
+          {availableFields.length === 0 ? (
+            <Box p="3" style={{ background: "var(--gray-a2)" }}>
               <Flex direction="column" align="center" py="6">
                 <AlertCircle size={24} color="var(--gray-a6)" />
                 <Text color="gray" mt="2" size="2">
                   No form fields available. Add Form nodes to the nodes first.
                 </Text>
               </Flex>
-            ) : (
-              <Flex direction="column" gap="2">
-                {availableFields.map(field => (
+            </Box>
+          ) : (
+            <Flex direction="column" gap="2">
+              {availableFields.map(field => (
+                <Box key={field.id} p="4" style={{ background: "var(--gray-a2)" }}>
                   <Flex
                     key={`${field.nodeId}-${field.id}`}
                     align="center"
                     gap="3"
                     p="2"
+                    m="2"
                     asChild
-                    style={{
-                      cursor: "pointer",
-                      border: "1px solid transparent",
-                    }}
                   >
                     <label
                       htmlFor={`field-${field.id}`}
@@ -175,7 +156,7 @@ const APINodeConfig = ({ node, onSave, nodes, edges, onClose }) => {
                         onCheckedChange={() => handleFieldToggle(field.id)}
                         mr="3"
                       />
-                      <Box minWidth="0">
+                      <Box>
                         <Flex align="center" gap="2" wrap="wrap">
                           <Text weight="medium">{field.name}</Text>
                           <Text size="1" color="blue" style={{ background: "var(--blue-a3)", borderRadius: '9999px', padding: '2px 8px' }}>
@@ -193,23 +174,16 @@ const APINodeConfig = ({ node, onSave, nodes, edges, onClose }) => {
                       </Box>
                     </label>
                   </Flex>
-                ))}
-              </Flex>
-            )}
-          </Box>
+                </Box>
+              ))}
+            </Flex>
+          )}
         </Box>
 
-        <Separator my="2" size="4" />
-
-        {/* Actions */}
-        <Flex justify="end" gap="3" pt="2">
-          <Button color="blue" onClick={handleSave}>
-            Save
-          </Button>
-          <Button color="gray" variant="soft" onClick={onClose}>
-            Close
-          </Button>
-        </Flex>
+        <ModalFooter
+          onSave={handleSave}
+          onClose={onClose}
+        />
       </Box>
     </Theme>
   );

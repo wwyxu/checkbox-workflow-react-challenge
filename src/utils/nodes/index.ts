@@ -1,4 +1,21 @@
+import { HttpTypes, NodeTypes } from "@/constants";
 import { Models } from "@/models";
+
+const createNewNode = (id: number, type: string, position) => {
+    const newNode = {
+        id: `${id}`,
+        type,
+        position,
+        data: {
+            label: `${type} node`,
+            ...(type === NodeTypes.FORM && { fields: [] }),
+            ...(type === NodeTypes.CONDITIONAL && { conditions: [] }),
+            ...(type === NodeTypes.API && { endpoint: '', method: HttpTypes.POST, selectedFields: [] }),
+        },
+    };
+    
+    return newNode;
+};
 
 function getImmediatePrecedingFormNodes(nodeId, nodes, edges) {
     const errors = [];
@@ -10,7 +27,7 @@ function getImmediatePrecedingFormNodes(nodeId, nodes, edges) {
 
     // Find edges that directly connect to the target node
     const incomingEdges = edges.filter(edge => edge.target === nodeId);
-    
+
     // Get the source node IDs from these direct edges
     const immediateSourceIds = incomingEdges.map(edge => edge.source);
 
@@ -29,4 +46,4 @@ function getImmediatePrecedingFormNodes(nodeId, nodes, edges) {
     return formNodes;
 }
 
-export { getImmediatePrecedingFormNodes };
+export { getImmediatePrecedingFormNodes, createNewNode };

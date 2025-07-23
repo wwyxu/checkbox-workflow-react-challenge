@@ -18,22 +18,22 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Box, Button, Card, Flex, Heading, Text } from '@radix-ui/themes';
 import { Save } from 'lucide-react';
 
+import { createNewNode, createWorkFlowSave, getInitialData } from '@/utils';
 import { removeSelectedFieldsFromIsolatedApiNodes, validateForms, validateWorkflowPath } from '@/validation';
 
 import { EVENT_DATA_TRANSFER_KEY, NodeTypes } from '@/constants';
 import moreThanOneInvalid from '@/constants/errors';
 import BlockPanel from './BlockPanel';
 import Modal from './common/Modal';
-import APINodeConfig from './formconfig/ApiNodeConfig';
-import FormNodeConfig from './formconfig/FormNodeConfig';
+import APINodeConfig from './nodemodal/ApiNodeConfig';
+import FormNodeConfig from './nodemodal/FormNodeConfig';
+import NodeDetails from './nodemodal/DefaultNodeConfig';
 import ApiNode from './nodes/ApiNode';
 import ConditionalNode from './nodes/ConditionalNode';
 import EndNode from './nodes/EndNode';
 import FormNode from './nodes/FormNode';
 import StartNode from './nodes/StartNode';
-
-import { LOCAL_STORAGE_KEY } from '@/constants';
-import { getInitialData } from '@/utils';
+import { ModalFooter } from './nodemodal/common/ModalFooter';
 
 const nodeTypes = {
   start: StartNode,
@@ -86,9 +86,7 @@ const WorkflowEditorInner = () => {
 
   useEffect(() => {
     if (nodes.length > 0) {
-    const newNodes = removeSelectedFieldsFromIsolatedApiNodes(nodes, edges);
-    console.log('Updated nodes after removing isolated API nodes:', newNodes);
-    setNodes(newNodes);
+      setNodes(removeSelectedFieldsFromIsolatedApiNodes(nodes, edges));
     }
   }, [edges]);
 
@@ -122,20 +120,7 @@ const WorkflowEditorInner = () => {
 
       // Get the position where the node was dropped
       const position = screenToFlowPosition({ x: event.clientX, y: event.clientY });
-
-      // Create a new node
-      const newNode = {
-        id: `${nextNodeId}`,
-        type,
-        position,
-        data: {
-          label: `${type} node`,
-          ...(type === NodeTypes.FORM && { fields: [] }),
-          ...(type === NodeTypes.CONDITIONAL && { conditions: [] }),
-          ...(type === NodeTypes.API && { endpoint: '', method: 'GET' }),
-        },
-      };
-
+      const newNode = createNewNode(nextNodeId, type, position);
       setNodes((nds) => nds.concat(newNode));
     },
     [nodes, nextNodeId, screenToFlowPosition, setNodes]
@@ -149,27 +134,7 @@ const WorkflowEditorInner = () => {
       return;
     }
 
-    const workflowConfig = {
-      nodes: nodes.map((node) => ({
-        id: node.id,
-        type: node.type,
-        position: node.position,
-        data: node.data,
-      })),
-      edges: edges.map((edge) => ({
-        id: edge.id,
-        source: edge.source,
-        target: edge.target,
-        label: edge.label,
-      })),
-      metadata: {
-        name: 'Sample Workflow',
-        version: '1.0.0',
-        created: new Date().toISOString(),
-      },
-    };
-
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(workflowConfig));
+    createWorkFlowSave(nodes, edges);
     setShowSaveDialog(true);
   };
 
@@ -185,63 +150,6 @@ const WorkflowEditorInner = () => {
 
     setShowNodeDialog(false);
   }, [nodes, setNodes]);
-
-  const renderNodeConfig = useCallback(() => {
-    if (!selectedNode) return null;
-
-    switch (selectedNode.type) {
-      case NodeTypes.API:
-        return (
-          <APINodeConfig
-            node={selectedNode}
-            nodes={nodes}
-            edges={edges}
-            onSave={handleNodeSave}
-            onClose={handleNodeDialogClose}
-          />
-        );
-      case NodeTypes.FORM:
-        return (
-          <FormNodeConfig
-            node={selectedNode}
-            onSave={handleNodeSave}
-            onClose={handleNodeDialogClose}
-          />
-        );
-      default:
-        return (
-          <div>
-            <Text size="2" weight="bold">Node ID:</Text>
-            <Text size="2" style={{ display: 'block', marginBottom: '8px' }}>{selectedNode.id}</Text>
-            <Text size="2" weight="bold">Type:</Text>
-            <Text size="2" style={{ display: 'block', marginBottom: '8px' }}>{selectedNode.type}</Text>
-            <Text size="2" weight="bold">Position:</Text>
-            <Text size="2" style={{ display: 'block', marginBottom: '8px' }}>
-              x: {Math.round(selectedNode.position.x)}, y: {Math.round(selectedNode.position.y)}
-            </Text>
-            <Text size="2" weight="bold">Data:</Text>
-            <pre style={{
-              background: '#f8fafc',
-              padding: '8px',
-              borderRadius: '4px',
-              fontSize: '12px',
-              overflow: 'auto',
-              maxHeight: '200px'
-            }}>
-              {JSON.stringify(selectedNode.data, null, 2)}
-            </pre>
-            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
-              <button
-                onClick={handleNodeDialogClose}
-                className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors shadow-sm font-medium"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        );
-    }
-  }, [selectedNode, nodes, handleNodeSave, handleNodeDialogClose]);
 
   return (
     <Flex minHeight="100vh" direction="column" style={{ width: '100%' }}>
@@ -312,9 +220,31 @@ const WorkflowEditorInner = () => {
         open={showNodeDialog}
         title={selectedNode ? `${selectedNode.type} Node Details` : 'Node Details'}
         onOpenChange={setShowNodeDialog}
-        onClose={handleNodeDialogClose}
       >
-        {renderNodeConfig()}
+        {selectedNode && (
+          <>
+            {selectedNode.type === NodeTypes.API ? (
+              <APINodeConfig
+                node={selectedNode}
+                nodes={nodes}
+                edges={edges}
+                onSave={handleNodeSave}
+                onClose={handleNodeDialogClose}
+              />
+            ) : selectedNode.type === NodeTypes.FORM ? (
+              <FormNodeConfig
+                node={selectedNode}
+                onSave={handleNodeSave}
+                onClose={handleNodeDialogClose}
+              />
+            ) : (
+              <NodeDetails
+                node={selectedNode}
+                onClose={handleNodeDialogClose}
+              />
+            )}
+          </>
+        )}
       </Modal>
 
       {/* Save Dialog Modal */}
@@ -322,11 +252,13 @@ const WorkflowEditorInner = () => {
         open={showSaveDialog}
         title="Workflow Saved"
         onOpenChange={setShowSaveDialog}
-        onClose={() => setShowSaveDialog(false)}
       >
         <Text size="2">
           Your workflow configuration has been saved to your browser. You can close and reopen this page to continue editing.
         </Text>
+        <ModalFooter
+          onClose={() => setShowSaveDialog(false)}
+        />
       </Modal>
     </Flex>
   );
