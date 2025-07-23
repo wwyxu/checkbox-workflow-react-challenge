@@ -3,4 +3,4 @@ const moreThanOneInvalid = {
   end: 'More than one end node is not allowed'
 };
 
-export default moreThanOneInvalid;
+export { moreThanOneInvalid };

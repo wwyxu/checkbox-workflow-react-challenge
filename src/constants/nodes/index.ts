@@ -23,4 +23,10 @@ enum ConditionalNodeOperatorTypes {
   IS_EMPTY = 'is_empty'
 }
 
-export { NodeTypes, HttpTypes, FormFieldTypes, ConditionalNodeOperatorTypes };
+enum ModalTypes {
+  NONE = 'none',  
+  NODE = 'node',
+  SAVE = 'save'
+}
+
+export { NodeTypes, HttpTypes, FormFieldTypes, ConditionalNodeOperatorTypes, ModalTypes };

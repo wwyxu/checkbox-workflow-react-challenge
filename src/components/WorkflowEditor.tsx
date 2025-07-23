@@ -19,10 +19,10 @@ import { Box, Button, Card, Flex, Heading, Text } from '@radix-ui/themes';
 import { Save } from 'lucide-react';
 
 import { createNewNode, createWorkFlowSave, getInitialData } from '@/utils';
-import { removeSelectedFieldsFromIsolatedApiNodes, validateForms, validateWorkflowPath } from '@/validation';
+import { hasMoreThanOneInvalid, removeSelectedFieldsFromIsolatedApiNodes, validateForms, validateWorkflowPath } from '@/validation';
 
-import { EVENT_DATA_TRANSFER_KEY, NodeTypes } from '@/constants';
-import moreThanOneInvalid from '@/constants/errors';
+import { EVENT_DATA_TRANSFER_KEY, ModalTypes, NodeTypes } from '@/constants';
+
 import BlockPanel from './BlockPanel';
 import Modal from './common/Modal';
 import APINodeConfig from './nodemodal/ApiNodeConfig';
@@ -34,6 +34,7 @@ import EndNode from './nodes/EndNode';
 import FormNode from './nodes/FormNode';
 import StartNode from './nodes/StartNode';
 import { ModalFooter } from './nodemodal/common/ModalFooter';
+import WorkflowModal from './WorkflowModal';
 
 const nodeTypes = {
   start: StartNode,
@@ -55,10 +56,9 @@ const nodeColor = {
 const WorkflowEditorInner = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [workflowErrors, setWorkflowErrors] = useState<string[]>([]);
   const [workflowSaveErrors, setWorkflowSaveErrors] = useState<string[]>([]);
-  const [showNodeDialog, setShowNodeDialog] = useState(false);
+  const [modalType, setModalType] = useState<ModalTypes>(ModalTypes.NONE);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
 
   const { screenToFlowPosition } = useReactFlow();
@@ -70,18 +70,8 @@ const WorkflowEditorInner = () => {
   }, [setNodes, setEdges]);
 
   useEffect(() => {
-    const errors: string[] = [];
-
-    if (nodes?.length > 0) {
-      // Check there is more than one start and end node
-      Object.entries(moreThanOneInvalid).forEach(([type, errorMsg]) => {
-        if (nodes.filter(node => node.type === type).length > 1) {
-          errors.push(errorMsg);
-        }
-      });
-    }
-
-    setWorkflowErrors(errors);
+    // Validate that there are no more than one start and end node
+    setWorkflowErrors(hasMoreThanOneInvalid(nodes));
   }, [nodes]);
 
   useEffect(() => {
@@ -103,7 +93,7 @@ const WorkflowEditorInner = () => {
   const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
     event.preventDefault();
     setSelectedNode(node);
-    setShowNodeDialog(true);
+    setModalType(ModalTypes.NODE);
   }, []);
 
   const onDragOver = useCallback((event: React.DragEvent) => {
@@ -135,11 +125,11 @@ const WorkflowEditorInner = () => {
     }
 
     createWorkFlowSave(nodes, edges);
-    setShowSaveDialog(true);
+    setModalType(ModalTypes.SAVE);
   };
 
   const handleNodeDialogClose = useCallback(() => {
-    setShowNodeDialog(false);
+    setModalType(ModalTypes.NONE);
     setSelectedNode(null);
   }, []);
 
@@ -147,9 +137,22 @@ const WorkflowEditorInner = () => {
     setNodes((nds) =>
       nds.map((n) => (n.id === node.id ? { ...n, data: { ...node.data } } : n))
     );
-
-    setShowNodeDialog(false);
+    setModalType(ModalTypes.NONE);
   }, [nodes, setNodes]);
+
+  const modalOpen = modalType !== ModalTypes.NONE;
+  const { modalTitle, modalContent } = WorkflowModal({
+    open: modalOpen,
+    modalType,
+    selectedNode,
+    nodes,
+    edges,
+    workflowErrors,
+    workflowSaveErrors,
+    onClose: handleNodeDialogClose,
+    onNodeSave: handleNodeSave,
+    setModalType,
+  });
 
   return (
     <Flex minHeight="100vh" direction="column" style={{ width: '100%' }}>
@@ -215,47 +218,18 @@ const WorkflowEditorInner = () => {
         </Box>
       </Flex>
 
-      {selectedNode && (
-        <Modal
-          open={showNodeDialog}
-          title={selectedNode ? `${selectedNode.type} Node Details` : 'Node Details'}
-          onOpenChange={setShowNodeDialog}
-        >
-          {selectedNode.type === NodeTypes.API ? (
-            <APINodeConfig
-              node={selectedNode}
-              nodes={nodes}
-              edges={edges}
-              onSave={handleNodeSave}
-              onClose={handleNodeDialogClose}
-            />
-          ) : selectedNode.type === NodeTypes.FORM ? (
-            <FormNodeConfig
-              node={selectedNode}
-              onSave={handleNodeSave}
-              onClose={handleNodeDialogClose}
-            />
-          ) : (
-            <NodeDetails
-              node={selectedNode}
-              onClose={handleNodeDialogClose}
-            />
-          )}
-        </Modal>
-      )}
-
-      {/* Save Dialog Modal */}
+      {/* Single Modal for both node and save dialogs */}
       <Modal
-        open={showSaveDialog}
-        title="Workflow Saved"
-        onOpenChange={setShowSaveDialog}
+        open={modalOpen}
+        title={modalTitle}
+        onOpenChange={(open) => {
+          if (!open) {
+            setModalType(ModalTypes.NONE);
+            setSelectedNode(null);
+          }
+        }}
       >
-        <Text size="2">
-          Your workflow configuration has been saved to your browser. You can close and reopen this page to continue editing.
-        </Text>
-        <ModalFooter
-          onClose={() => setShowSaveDialog(false)}
-        />
+        {modalContent}
       </Modal>
     </Flex>
   );
