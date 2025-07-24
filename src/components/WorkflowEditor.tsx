@@ -137,13 +137,10 @@ const WorkflowEditorInner = () => {
 
   const modalOpen = modalType !== ModalTypes.NONE;
   const { modalTitle, modalContent } = WorkflowModal({
-    open: modalOpen,
     modalType,
     selectedNode,
     nodes,
     edges,
-    workflowErrors,
-    workflowSaveErrors,
     onClose: handleNodeDialogClose,
     onNodeSave: handleNodeSave,
     setModalType,

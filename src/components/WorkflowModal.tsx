@@ -5,16 +5,12 @@ import APINodeConfig from './nodemodal/ApiNodeConfig';
 import FormNodeConfig from './nodemodal/FormNodeConfig';
 import NodeDetails from './nodemodal/DefaultNodeConfig';
 import { ModalTypes, NodeTypes } from '@/constants';
-import { Node, Edge } from '@xyflow/react';
 
 const WorkflowModal = ({
-  open,
   modalType,
   selectedNode,
   nodes,
   edges,
-  workflowErrors,
-  workflowSaveErrors,
   onClose,
   onNodeSave,
   setModalType,
