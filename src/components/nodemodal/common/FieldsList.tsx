@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Flex,
   Text
@@ -8,21 +7,12 @@ import { Plus } from 'lucide-react';
 import React from 'react';
 import { ErrorAlert } from './ErrorAlert';
 import { FieldEditor } from './FieldEditor';
-
-// Type definitions
-type FieldType = 'text' | 'email' | 'number';
-
-interface Field {
-  id: string;
-  name: string;
-  type: FieldType;
-  required: boolean;
-}
+import { Models } from '@/models';
 
 interface FieldsListProps {
-  fields: Field[];
+  fields: Models.Field[];
   onAddField: () => void;
-  onUpdateField: (fieldId: string, updates: Partial<Field>) => void;
+  onUpdateField: (fieldId: string, updates: Partial<Models.Field>) => void;
   onRemoveField: (fieldId: string) => void;
   errors: Record<string, string | undefined>;
 }

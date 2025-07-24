@@ -1,4 +1,4 @@
-import { ModalFooter } from "./common/ModalFooter";
+import { ModalFooter } from "../common/ModalFooter";
 import { Text } from "@radix-ui/themes";
 
 const NodeDetails = ({ node, onClose }) => {

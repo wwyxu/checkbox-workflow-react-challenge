@@ -4,10 +4,15 @@ import { getImmediatePrecedingFormNodes } from '@/utils';
 import { validateApiNodeConfig } from '@/validation/forms/ApiNodeConfig';
 import { Box, Grid, Theme } from '@radix-ui/themes';
 import { useCallback, useMemo, useState } from 'react';
-import { ModalFooter } from './common/ModalFooter';
+import { ModalFooter } from '../common/ModalFooter';
 import { FormField } from './common/FormField';
 import { FormSelect } from './common/FormSelect';
 import { FieldSelector } from './common/FieldSelector';
+
+const httpMethodOptions = [
+    { value: HttpTypes.POST, label: 'POST' },
+    { value: HttpTypes.PUT, label: 'PUT' }
+];
 
 const APINodeConfig = ({ node, onSave, nodes, edges, onClose }) => {
     const [nodeName, setNodeName] = useState<string>(node?.data?.label || '');
@@ -20,11 +25,6 @@ const APINodeConfig = ({ node, onSave, nodes, edges, onClose }) => {
         const precedingFormNodes = getImmediatePrecedingFormNodes(node.id, nodes, edges);
         return precedingFormNodes || [];
     }, [nodes, edges, node.id]);
-
-    const httpMethodOptions = useMemo(() => [
-        { value: HttpTypes.POST, label: 'POST' },
-        { value: HttpTypes.PUT, label: 'PUT' }
-    ], []);
 
     const validateForm = useCallback((): boolean => {
         const newErrors: Models.ValidationErrors = validateApiNodeConfig(nodeName, httpMethod, url);

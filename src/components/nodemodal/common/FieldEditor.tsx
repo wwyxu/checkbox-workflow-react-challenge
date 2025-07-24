@@ -7,23 +7,15 @@ import {
   Text
 } from '@radix-ui/themes';
 import { Trash2 } from 'lucide-react';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { FormField } from './FormField';
 import { FormSelect } from './FormSelect';
-
-type FieldType = 'text' | 'email' | 'number';
-
-interface Field {
-  id: string;
-  name: string;
-  type: FieldType;
-  required: boolean;
-}
+import { Models } from '@/models';
 
 interface FieldEditorProps {
-  field: Field;
+  field: Models.Field;
   index: number;
-  onUpdate: (updates: Partial<Field>) => void;
+  onUpdate: (updates: Partial<Models.Field>) => void;
   onRemove: () => void;
   errors: Record<string, string | undefined>;
 }
@@ -75,7 +67,7 @@ export const FieldEditor: React.FC<FieldEditorProps> = ({
           label="Field Type"
           id={`field_${field.id}_type`}
           value={field.type}
-          onChange={(value) => onUpdate({ type: value as FieldType })}
+          onChange={(value) => onUpdate({ type: value as Models.FormFieldType })}
           options={fieldTypeOptions}
           required
         />

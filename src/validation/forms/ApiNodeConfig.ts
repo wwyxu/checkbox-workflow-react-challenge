@@ -13,7 +13,7 @@ const validateURL = (url: string): boolean => {
 const validateApiNodeConfig = (nodeName, httpMethod, url) => {
     const newErrors: Models.ValidationErrors = {};
 
-    if (!nodeName.trim()) {
+    if (!nodeName?.trim()) {
         newErrors.nodeName = 'Node name is required';
     }
 

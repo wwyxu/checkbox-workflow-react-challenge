@@ -8,7 +8,7 @@ interface ValidationErrors {
 const validateFormNodeConfig = (nodeName, fields) => {
     const newErrors: ValidationErrors = {};
 
-    if (!nodeName.trim()) {
+    if (!nodeName?.trim()) {
         newErrors.nodeName = 'Node name is required';
     }
 

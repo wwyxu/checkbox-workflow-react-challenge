@@ -1,9 +1,12 @@
-import { Models } from '@/models';
 import { Box, Flex, Text } from '@radix-ui/themes';
 import { Handle, Position } from '@xyflow/react';
 import { Square } from 'lucide-react';
 
-const EndNode = ({ }: { data: Models.EndNodeData }) => {
+interface EndNodeData {
+  label: string;
+}
+
+const EndNode = ({ }: { data: EndNodeData }) => {
   return (
     <Box
       px="4"

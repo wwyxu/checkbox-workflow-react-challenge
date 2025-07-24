@@ -1,9 +1,12 @@
+import { Box, Flex, Text } from '@radix-ui/themes';
 import { Handle, Position } from '@xyflow/react';
 import { Play } from 'lucide-react';
-import { Box, Text, Flex } from '@radix-ui/themes';
-import { Models } from '@/models';
 
-const StartNode = ({ data }: { data: Models.StartNodeData }) => {
+interface StartNodeData {
+  label: string;
+}
+
+const StartNode = ({ data }: { data: StartNodeData }) => {
   return (
     <Box
       px="4"

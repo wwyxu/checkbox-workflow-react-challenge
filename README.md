@@ -75,4 +75,17 @@ src/
 └── main.tsx
 ```
 
-## Tradeoffs
+## Approaches and Tradeoffs
+
+Redux for global state management could be great (though react context is great now as well)
+
+Pros:
+   - Cleaner code, more maintainable, scalable with better seperation of concerns
+   - For modules such as Modal, we can join the modal and modal footer together and use redux to manage behaviours like save close and what to render
+
+Cons:
+   - Takes longer to implement and develop features for
+   - Bundle size would increase due to redux module 
+
+Folder Structure
+

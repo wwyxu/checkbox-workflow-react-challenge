@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text } from '@radix-ui/themes';
-import { ModalFooter } from './nodemodal/common/ModalFooter';
+import { ModalFooter } from './common/ModalFooter';
 import APINodeConfig from './nodemodal/ApiNodeConfig';
 import FormNodeConfig from './nodemodal/FormNodeConfig';
 import NodeDetails from './nodemodal/DefaultNodeConfig';

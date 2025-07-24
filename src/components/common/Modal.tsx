@@ -1,6 +1,6 @@
-import React from 'react';
-import { AlertDialog, Flex, Button } from '@radix-ui/themes';
 import { useClickOutside } from '@/hooks/useClickOutside';
+import { AlertDialog } from '@radix-ui/themes';
+import React from 'react';
 
 interface ModalProps {
   open: boolean;

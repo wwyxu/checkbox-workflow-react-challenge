@@ -3,7 +3,15 @@ import { Box, Flex, Text } from '@radix-ui/themes';
 import { Handle, Position } from '@xyflow/react';
 import { GitBranch } from 'lucide-react';
 
-const ConditionalNode = ({ data }: { data: Models.ConditionalNodeData }) => {
+export interface ConditionalNodeData {
+  label: string;
+  customName?: string;
+  fieldToEvaluate?: string;
+  operator?: Models.ConditionalNodeOperator;
+  value?: string;
+}
+
+const ConditionalNode = ({ data }: { data: ConditionalNodeData }) => {
   return (
     <Box
       px="4"
@@ -37,7 +45,7 @@ const ConditionalNode = ({ data }: { data: Models.ConditionalNodeData }) => {
       </Flex>
 
       <Text size="1" style={{ opacity: 0.9, textAlign: 'center' }}>
-        {data.fieldToEvaluate 
+        {data.fieldToEvaluate
           ? `${data.fieldToEvaluate} ${data.operator || ''} ${data.value || ''}`
           : 'Click to configure conditions'}
       </Text>

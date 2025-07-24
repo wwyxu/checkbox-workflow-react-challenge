@@ -3,7 +3,15 @@ import { Box, Flex, Text } from '@radix-ui/themes';
 import { Handle, Position } from '@xyflow/react';
 import { Globe } from 'lucide-react';
 
-const ApiNode = ({ data }: { data: Models.ApiNodeData }) => {
+interface ApiNodeData {
+  label: string;
+  customName?: string;
+  httpMethod?: Models.httpMethod;
+  url?: string;
+  requestBody?: Record<string, string>;
+}
+
+const ApiNode = ({ data }: { data: ApiNodeData }) => {
   return (
     <Box
       px="4"

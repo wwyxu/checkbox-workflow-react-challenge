@@ -1,17 +1,16 @@
+import { FormFieldTypes } from '@/constants';
+import { Models } from '@/models';
 import { validateFormNodeConfig } from '@/validation/forms/FormNodeConfig';
 import { Box, Theme } from '@radix-ui/themes';
 import React, { useState } from 'react';
-import { ModalFooter } from './common/ModalFooter';
-import { FormField } from './common/FormField';
+import { ModalFooter } from '../common/ModalFooter';
 import { FieldsList } from './common/FieldsList';
-
-// Type definitions
-type FieldType = 'text' | 'email' | 'number';
+import { FormField } from './common/FormField';
 
 interface Field {
   id: string;
   name: string;
-  type: FieldType;
+  type: Models.FormFieldType;
   required: boolean;
 }
 
@@ -36,7 +35,7 @@ const FormNodeConfig: React.FC<FormNodeConfigProps> = ({ node, onSave, onClose }
     const newField: Field = {
       id: `f${Date.now()}`,
       name: '',
-      type: 'text',
+      type: FormFieldTypes.TEXT,
       required: false,
     };
     setFields([...fields, newField]);

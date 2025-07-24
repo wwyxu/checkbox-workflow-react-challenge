@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { selectState } from '@/utils/selectState';
 
 type Handler = (event: MouseEvent | TouchEvent) => void;
 
@@ -12,27 +13,7 @@ export function useClickOutside<T extends HTMLElement>(handler: Handler) {
         return;
       }
 
-      // Check if the click is on a Radix UI portal element
-      const target = event.target as Element;
-      
-      // Modal would close when clicking select field
-      const radixPortalSelectors = [
-        '[data-radix-portal]',
-        '[data-radix-popper-content-wrapper]',
-        '.radix-select-content',
-        '.radix-dropdown-menu-content',
-        '.radix-popover-content',
-        '.radix-tooltip-content',
-        '[role="listbox"]',
-        '[role="option"]',
-      ];
-
-      // Check if the clicked element or any parent is a Radix portal
-      const isRadixPortal = radixPortalSelectors.some(selector => 
-        target.closest(selector) !== null
-      );
-
-      if (isRadixPortal) {
+      if (selectState.hasOpenSelect) {
         return;
       }
 
