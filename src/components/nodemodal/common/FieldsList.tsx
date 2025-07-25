@@ -24,6 +24,8 @@ export const FieldsList: React.FC<FieldsListProps> = ({
   onRemoveField,
   errors
 }) => {
+
+      console.log('Validation errors:', errors);
   return (
     <>
       {/* Fields Header & Add Field */}

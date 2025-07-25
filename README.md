@@ -130,12 +130,12 @@ Cons:
 
 ### Validation
 
-Current implementation - Simply check each field with a function to see if they are valid
+Previous implementation: Simply check each field with a function to see if they are valid
 Pros: Simple and quick to implement
 Cons: Not as scalable and contains alot of duplicate code
 
 Schema Factory Pattern 
-Pros: More extensible, easy to read. Can define different schemas for nodes which extend from the same basenodeschema
+Pros: More extensible, easy to read. Can define different schemas for nodes which can extend from the same base schema
 Cons: Takes longer to implement the foundations
 
 ### Using a number as the id of nodes
@@ -177,5 +177,4 @@ ex.
 - Adding more typescript types
 - Moving more of the javascript styles to styles.css
 - Implement the factory pattern for node creation
-- Schema Factory Pattern: Create schemas for different validation and reuse them between different object type. Can make them extend from basenodevalidationschema.
 

@@ -1,5 +1,5 @@
 import { FormFieldTypes } from '@/constants';
-import { Models } from '@/models';
+import { Models, Validation } from '@/models';
 import { validateFormNodeConfig } from '@/validation/forms/FormNodeConfig';
 import { Box, Theme } from '@radix-ui/themes';
 import React, { useState } from 'react';
@@ -7,32 +7,19 @@ import { ModalFooter } from '../common/ModalFooter';
 import { FieldsList } from './common/FieldsList';
 import { FormField } from './common/FormField';
 
-interface Field {
-  id: string;
-  name: string;
-  type: Models.FormFieldType;
-  required: boolean;
-}
-
 interface FormNodeConfigProps {
   node?: any;
   onSave: (node: any) => void;
   onClose: () => void;
 }
 
-interface ValidationErrors {
-  nodeName?: string;
-  fields?: string;
-  [key: string]: string | undefined;
-}
-
 const FormNodeConfig: React.FC<FormNodeConfigProps> = ({ node, onSave, onClose }) => {
   const [nodeName, setNodeName] = useState<string>(node?.data.name || '');
-  const [fields, setFields] = useState<Field[]>(node?.data.fields || []);
-  const [errors, setErrors] = useState<ValidationErrors>({});
+  const [fields, setFields] = useState<Models.Field[]>(node?.data.fields || []);
+  const [errors, setErrors] = useState<Validation.ValidationErrors>({});
 
   const addField = (): void => {
-    const newField: Field = {
+    const newField: Models.Field = {
       id: `f${Date.now()}`,
       name: '',
       type: FormFieldTypes.TEXT,
@@ -45,7 +32,7 @@ const FormNodeConfig: React.FC<FormNodeConfigProps> = ({ node, onSave, onClose }
     setFields(fields.filter((field) => field.id !== fieldId));
   };
 
-  const updateField = (fieldId: string, updates: Partial<Field>): void => {
+  const updateField = (fieldId: string, updates: Partial<Models.Field>): void => {
     setFields(
       fields.map((field) =>
         field.id === fieldId ? { ...field, ...updates } : field
@@ -94,7 +81,7 @@ const FormNodeConfig: React.FC<FormNodeConfigProps> = ({ node, onSave, onClose }
           onAddField={addField}
           onUpdateField={updateField}
           onRemoveField={removeField}
-          errors={errors}
+          errors={errors as any}
         />
 
         <ModalFooter

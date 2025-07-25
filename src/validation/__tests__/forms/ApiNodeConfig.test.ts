@@ -1,5 +1,7 @@
-import { validateURL, validateApiNodeConfig, removeSelectedFieldsFromIsolatedApiNodes } from '../../forms/ApiNodeConfig';
 import { HttpTypes, NodeTypes } from '@/constants';
+import { removeSelectedFieldsFromIsolatedApiNodes } from '@/utils';
+import { validateURL } from '@/validation/common';
+import { validateApiNodeConfig } from '../../forms/ApiNodeConfig';
 
 describe('validateURL', () => {
     it('returns true for valid URLs', () => {

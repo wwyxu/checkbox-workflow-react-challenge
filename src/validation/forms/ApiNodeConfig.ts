@@ -1,33 +1,36 @@
-import { HttpTypes, NodeTypes } from "@/constants";
-import { Models } from "@/models";
+import { HttpTypes } from "@/constants";
+import { Validation } from "@/models";
+import { validateURL } from "@/validation/common";
+import { validateWithSchema } from "./Schema";
 
-const validateURL = (url: string): boolean => {
-    try {
-        new URL(url);
-        return true;
-    } catch {
-        return false;
-    }
+// API Node Schema
+export const apiNodeSchema: Validation.Schema = {
+    fields: [
+        {
+            key: "nodeName",
+            validators: [
+                (val) => (!val?.trim() ? "Node name is required" : undefined)
+            ]
+        },
+        {
+            key: "httpMethod",
+            validators: [
+                (val) =>
+                    val.trim() !== HttpTypes.POST && val.trim() !== HttpTypes.PUT
+                        ? "Invalid HTTP Method"
+                        : undefined
+            ]
+        },
+        {
+            key: "url",
+            validators: [
+                (val) => (!val?.trim() ? "URL is required" : undefined),
+                (val) => (val && !validateURL(val) ? "Please enter a valid URL" : undefined)
+            ]
+        }
+    ]
 };
 
-const validateApiNodeConfig = (nodeName, httpMethod, url) => {
-    const newErrors: Models.ValidationErrors = {};
-
-    if (!nodeName?.trim()) {
-        newErrors.nodeName = 'Node name is required';
-    }
-
-    if (httpMethod.trim() !== HttpTypes.POST && httpMethod.trim() !== HttpTypes.PUT) {
-        newErrors.httpMethod = 'Invalid HTTP Method';
-    }
-
-    if (!url.trim()) {
-        newErrors.url = 'URL is required';
-    } else if (!validateURL(url)) {
-        newErrors.url = 'Please enter a valid URL';
-    }
-
-    return newErrors;
-};
-
-export { validateURL, validateApiNodeConfig };
+export function validateApiNodeConfig(nodeName: string, httpMethod: string, url: string) {
+    return validateWithSchema(apiNodeSchema, { nodeName, httpMethod, url });
+}

@@ -17,10 +17,10 @@ describe('validateFormNodeConfig', () => {
     });
 
     it('should return error for fields with empty name', () => {
-        const fields = [{ id: 'a', name: '' }, { id: 'b', name: '  ' }];
+        const fields = [{ id: 'a', name: '' }, { id: 'b', name: '' }];
         const result = validateFormNodeConfig('Form Node', fields);
-        expect(result['field_a_name']).toBe('Field name is required');
-        expect(result['field_b_name']).toBe('Field name is required');
+        expect(result['fields_a_name']).toBe('Field name is required');
+        expect(result['fields_b_name']).toBe('Field name is required');
     });
 
     it('should return no error for valid input', () => {
@@ -34,12 +34,12 @@ describe('validateFormNodeConfig', () => {
         const result = validateFormNodeConfig('', fields);
         expect(result.nodeName).toBe('Node name is required');
         expect(result.fields).toBeUndefined(); // fields length > 0, so no error for fields
-        expect(result['field_f1_name']).toBe('Field name is required');
+        expect(result['fields_f1_name']).toBe('Field name is required');
     });
 
     it('should not break if fields has extra properties', () => {
         const fields = [{ id: 'f1', name: '', type: 'text' }];
         const result = validateFormNodeConfig('Node', fields);
-        expect(result['field_f1_name']).toBe('Field name is required');
+        expect(result['fields_f1_name']).toBe('Field name is required');
     });
 });

@@ -6,14 +6,6 @@ export declare namespace Models {
     type FormFieldType = FormFieldTypes.TEXT | FormFieldTypes.EMAIL | FormFieldTypes.NUMBER;
     type ModalType = ModalTypes.NONE | ModalTypes.NODE | ModalTypes.SAVE;
 
-    // Validation error messages for nodes
-    export interface ValidationErrors {
-        nodeName?: string;
-        url?: string;
-        httpMethod?: string;
-        fields?: string;
-    }
-
     // Form field definition for form nodes
     export interface FormField {
         id: string;

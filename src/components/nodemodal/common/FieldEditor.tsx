@@ -33,7 +33,7 @@ export const FieldEditor: React.FC<FieldEditorProps> = ({
   onRemove,
   errors
 }) => {
-  const fieldNameError = errors[`field_${field.id}_name`];
+  const fieldNameError = errors[`fields_${field.id}_name`];
 
   return (
     <Box p="4" style={{ background: "var(--gray-a2)" }}>

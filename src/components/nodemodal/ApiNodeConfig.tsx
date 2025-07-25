@@ -1,5 +1,5 @@
 import { HttpTypes } from '@/constants';
-import { Models } from '@/models';
+import { Models, Validation } from '@/models';
 import { getImmediatePrecedingFormNodes } from '@/utils';
 import { validateApiNodeConfig } from '@/validation/forms/ApiNodeConfig';
 import { Box, Grid, Theme } from '@radix-ui/themes';
@@ -19,7 +19,7 @@ const APINodeConfig = ({ node, onSave, nodes, edges, onClose }) => {
     const [httpMethod, setHttpMethod] = useState<HttpTypes.POST | HttpTypes.PUT>(node?.data?.method || HttpTypes.POST);
     const [url, setUrl] = useState<string>(node?.data?.endpoint || '');
     const [selectedFields, setSelectedFields] = useState<string[]>(node?.data?.selectedFields || []);
-    const [errors, setErrors] = useState<Models.ValidationErrors>({});
+    const [errors, setErrors] = useState<Validation.ValidationErrors>({});
 
     const availableFields = useMemo<Models.FormField[]>(() => {
         const precedingFormNodes = getImmediatePrecedingFormNodes(node.id, nodes, edges);
@@ -27,7 +27,7 @@ const APINodeConfig = ({ node, onSave, nodes, edges, onClose }) => {
     }, [nodes, edges, node.id]);
 
     const validateForm = useCallback((): boolean => {
-        const newErrors: Models.ValidationErrors = validateApiNodeConfig(nodeName, httpMethod, url);
+        const newErrors: Validation.ValidationErrors = validateApiNodeConfig(nodeName, httpMethod, url);
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     }, [nodeName, url]);

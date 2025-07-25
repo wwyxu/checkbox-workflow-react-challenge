@@ -1,23 +1,29 @@
-import { Models } from "@/models";
+import { Validation } from "@/models";
+import { validateWithSchema } from "./Schema";
 
-const validateFormNodeConfig = (nodeName, fields) => {
-    const newErrors: Models.ValidationErrors = {};
-
-    if (!nodeName?.trim()) {
-        newErrors.nodeName = 'Node name is required';
+// Form Node Schema
+export const formNodeSchema: Validation.Schema = {
+  fields: [
+    {
+      key: "nodeName",
+      validators: [
+        (val) => (!val?.trim() ? "Node name is required" : undefined)
+      ]
+    },
+    {
+      key: "fields",
+      validators: [
+        (val) => (Array.isArray(val) && val.length === 0 ? "At least one field must be configured" : undefined)
+      ]
     }
-
-    if (fields.length === 0) {
-        newErrors.fields = 'At least one field must be configured';
-    }
-
-    fields.forEach((field) => {
-        if (!field.name.trim()) {
-            newErrors[`field_${field.id}_name`] = 'Field name is required';
-        }
-    });
-
-    return newErrors;
+  ],
+  itemValidators: {
+    fields: [
+      (_, item) => (!item.name?.trim() ? "Field name is required" : undefined)
+    ]
+  }
 };
 
-export { validateFormNodeConfig };
+export function validateFormNodeConfig(nodeName: string, fields: any[] ) {
+  return validateWithSchema(formNodeSchema, { nodeName, fields });
+}
