@@ -122,53 +122,53 @@ src/
 
 ### Redux for global state management
 
-Pros:
+Pros:<br>
    - Cleaner code, more maintainable, scalable with better seperation of concerns = better for testing as well
    - See Modal
 
-Cons:
+Cons:<br>
    - Takes longer to implement and develop features for in the short term
    - Bundle size would increase due to redux module 
 
 ### Validation
 
-Previous implementation: Simply check each field with a function to see if they are valid\
+Previous implementation: Simply check each field with a function to see if they are valid<br>
 
-Pros:\ 
-   - Simple and quick to implement\
-Cons:\
+Pros:<br>
+   - Simple and quick to implement<br>
+Cons:<br>
    - Not as scalable and contains alot of duplicate code\
 
-Schema Factory Pattern\
-Pros:\ 
+Schema Factory Pattern<br>
+Pros:<br>
    - More extensible, easy to read. Can define different schemas for nodes which can extend from the same base schema\
-Cons:\ 
-   - Takes longer to implement the foundations\
+Cons:<br>
+   - Takes longer to implement the foundations<br>
 
 ### Using a number as the id of nodes
 
-Pros:\
-   - Simple to implement and quick\
-Cons:\
-   - Not good for extensibility, eg if we were to turn this into a collaborative app. Better to use a uuid (slower however)\
+Pros:<br>
+   - Simple to implement and quick<br>
+Cons:<br>
+   - Not good for extensibility, eg if we were to turn this into a collaborative app. Better to use a uuid (slower however)<br>
 
 ### Node Creation
 
-Previous implementation just simply creates a new node with essentially an if else using clean e6 syntax\
-Pros:\
-   - Quick and easy to implement\
+Previous implementation just simply creates a new node with essentially an if else using clean e6 syntax<br>
+Pros:<br>
+   - Quick and easy to implement<br>
 Cons:\
-   - Difficult to maintain if we were to have many different new node types\
+   - Difficult to maintain if we were to have many different new node types<br>
 
-Factory Pattern: (Can alternatively implement this with a switch statement)\
-Pros:\
-   - Easy to implement to new nodes simply by adding new schemas\
-Cons:\
-   - Longer to implement foundations, simply unnecessary if their aren't alot of different node types\
+Factory Pattern: (Can alternatively implement this with a switch statement)<br>
+Pros:<br>
+   - Easy to implement to new nodes simply by adding new schemas<br>
+Cons:<br>
+   - Longer to implement foundations, simply unnecessary if their aren't alot of different node types<br>
 
 #### Modal Alternative Approaches
 
-Current approach:\
+Current approach:<br>
 - Importing footer to each child node config so we can we can manage validation and state internally, whilst passing onsave to the footer. Quickest to implement but not the cleanest solution as we are passing footer multiple times to the same type of components.
 Redux to manage state:
 - Best solution long term, takes longer to implement but more scalable and maintainable, we can combine footer and modal together and change footer behaviour depending on the current node selected.
