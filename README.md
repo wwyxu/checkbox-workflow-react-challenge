@@ -176,7 +176,7 @@ ex.
 
 ## Assumptions and limitation
 
-Assumed that the assignment was to test development under real world time constraints, where deadlines must be met. Thus cut corners to achieve something deliverable within this time frame. e.g sacrificing code quality for results.
+Assumed that the assignment was to test development under real world time constraints, where deadlines must be met. Thus cut corners to achieve something deliverable within the time frame. e.g sacrificing code quality for results.
 
 ## How the implementation supports future extensibility
 - Can create new schemas for new nodes and validation
@@ -189,7 +189,7 @@ Wrote unit tests for the most important logic, would extend this to include inte
 
 ## Improvements
 
-- Adding more typescript types
+- Adding more typescript types, avoiding any
 - Moving more of the javascript styles to styles.css
 - Implement Redux
 - E2e/integration testing

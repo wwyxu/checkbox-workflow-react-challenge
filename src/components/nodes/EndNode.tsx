@@ -6,7 +6,7 @@ interface EndNodeData {
   label: string;
 }
 
-const EndNode = ({ }: { data: EndNodeData }) => {
+const EndNode = ({}: { data: EndNodeData }) => {
   return (
     <Box
       px="4"

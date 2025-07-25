@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  Flex,
-  Grid,
-  Text
-} from '@radix-ui/themes';
+import { Box, Button, Checkbox, Flex, Grid, Text } from '@radix-ui/themes';
 import { Trash2 } from 'lucide-react';
 import React from 'react';
 import { FormField } from './FormField';
@@ -23,7 +16,7 @@ interface FieldEditorProps {
 const fieldTypeOptions = [
   { value: 'text', label: 'Text' },
   { value: 'email', label: 'Email' },
-  { value: 'number', label: 'Number' }
+  { value: 'number', label: 'Number' },
 ];
 
 export const FieldEditor: React.FC<FieldEditorProps> = ({
@@ -31,12 +24,12 @@ export const FieldEditor: React.FC<FieldEditorProps> = ({
   index,
   onUpdate,
   onRemove,
-  errors
+  errors,
 }) => {
   const fieldNameError = errors[`fields_${field.id}_name`];
 
   return (
-    <Box p="4" style={{ background: "var(--gray-a2)" }}>
+    <Box p="4" style={{ background: 'var(--gray-a2)' }}>
       <Flex align="center" justify="between" mb="3">
         <Text weight="medium" color="gray">
           Field {index + 1}
@@ -52,7 +45,7 @@ export const FieldEditor: React.FC<FieldEditorProps> = ({
         </Button>
       </Flex>
 
-      <Grid columns={{ initial: "1", md: "2" }} gap="4">
+      <Grid columns={{ initial: '1', md: '2' }} gap="4">
         <FormField
           label="Field Name"
           id={`field_${field.id}_name`}

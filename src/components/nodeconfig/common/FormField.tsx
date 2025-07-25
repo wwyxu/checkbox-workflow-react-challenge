@@ -12,15 +12,15 @@ interface FormFieldProps {
   required?: boolean;
 }
 
-export const FormField = ({ 
-  label, 
-  id, 
-  value, 
-  onChange, 
-  placeholder, 
-  type = "text", 
+export const FormField = ({
+  label,
+  id,
+  value,
+  onChange,
+  placeholder,
+  type = 'text',
   error,
-  required = false 
+  required = false,
 }: FormFieldProps) => (
   <Box>
     <Text as="label" size="2" weight="medium" mb="1" htmlFor={id}>

@@ -8,25 +8,25 @@ enum NodeTypes {
 
 enum HttpTypes {
   POST = 'POST',
-  PUT = 'PUT'
+  PUT = 'PUT',
 }
 
 enum FormFieldTypes {
   TEXT = 'text',
   EMAIL = 'email',
-  NUMBER = 'number'
+  NUMBER = 'number',
 }
 
 enum ConditionalNodeOperatorTypes {
   EQUALS = 'equals',
   NOT_EQUALS = 'not_equals',
-  IS_EMPTY = 'is_empty'
+  IS_EMPTY = 'is_empty',
 }
 
 enum ModalTypes {
-  NONE = 'none',  
+  NONE = 'none',
   NODE = 'node',
-  SAVE = 'save'
+  SAVE = 'save',
 }
 
 export { NodeTypes, HttpTypes, FormFieldTypes, ConditionalNodeOperatorTypes, ModalTypes };

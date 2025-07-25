@@ -33,11 +33,7 @@ const FormNodeConfig: React.FC<FormNodeConfigProps> = ({ node, onSave, onClose }
   };
 
   const updateField = (fieldId: string, updates: Partial<Models.Field>): void => {
-    setFields(
-      fields.map((field) =>
-        field.id === fieldId ? { ...field, ...updates } : field
-      )
-    );
+    setFields(fields.map((field) => (field.id === fieldId ? { ...field, ...updates } : field)));
   };
 
   const validateForm = (): boolean => {
@@ -84,10 +80,7 @@ const FormNodeConfig: React.FC<FormNodeConfigProps> = ({ node, onSave, onClose }
           errors={errors as any}
         />
 
-        <ModalFooter
-          onSave={handleSave}
-          onClose={onClose}
-        />
+        <ModalFooter onSave={handleSave} onClose={onClose} />
       </Box>
     </Theme>
   );

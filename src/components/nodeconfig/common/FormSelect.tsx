@@ -17,14 +17,14 @@ interface FormSelectProps {
   required?: boolean;
 }
 
-export const FormSelect = ({ 
-  label, 
-  id, 
-  value, 
-  onChange, 
-  options, 
+export const FormSelect = ({
+  label,
+  id,
+  value,
+  onChange,
+  options,
   error,
-  required = false 
+  required = false,
 }: FormSelectProps) => {
   const handleOpenChange = (open: boolean) => {
     if (open) {
@@ -42,14 +42,10 @@ export const FormSelect = ({
         <Text as="label" size="2" weight="medium" htmlFor={id}>
           {label} {required && <Text color="red">*</Text>}
         </Text>
-        <Select.Root 
-          value={value} 
-          onValueChange={onChange}
-          onOpenChange={handleOpenChange}
-        >
+        <Select.Root value={value} onValueChange={onChange} onOpenChange={handleOpenChange}>
           <Select.Trigger id={id} />
           <Select.Content>
-            {options.map(option => (
+            {options.map((option) => (
               <Select.Item key={option.value} value={option.value}>
                 {option.label}
               </Select.Item>

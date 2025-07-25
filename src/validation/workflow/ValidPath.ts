@@ -1,10 +1,10 @@
-import { moreThanOneInvalid } from "@/constants";
+import { moreThanOneInvalid } from '@/constants';
 
 function validateWorkflowPath(nodes, edges) {
   const errors = [];
   // Find start and End Nodes
-  const startNodes = nodes.filter(node => node.type === 'start');
-  const endNodes = nodes.filter(node => node.type === 'end');
+  const startNodes = nodes.filter((node) => node.type === 'start');
+  const endNodes = nodes.filter((node) => node.type === 'end');
 
   // Validation checks
   if (startNodes.length === 0) {
@@ -24,11 +24,11 @@ function validateWorkflowPath(nodes, edges) {
 
   // Build adjacency list from edges
   const adjacencyList = {};
-  nodes.forEach(node => {
+  nodes.forEach((node) => {
     adjacencyList[node.id] = [];
   });
 
-  edges.forEach(edge => {
+  edges.forEach((edge) => {
     if (adjacencyList[edge.source]) {
       adjacencyList[edge.source].push(edge.target);
     }
@@ -59,7 +59,9 @@ function validateWorkflowPath(nodes, edges) {
   const hasCompletePath = canReachEnd(startNode.id);
 
   if (!hasCompletePath) {
-    errors.push(`No complete path exists from Start Node ${startNode.id} to End Node ${endNode.id}`);
+    errors.push(
+      `No complete path exists from Start Node ${startNode.id} to End Node ${endNode.id}`
+    );
   }
 
   return errors;
@@ -68,15 +70,15 @@ function validateWorkflowPath(nodes, edges) {
 const hasMoreThanOneInvalid = (nodes) => {
   let errors = [];
 
-    if (nodes?.length > 0) {
-      Object.entries(moreThanOneInvalid).forEach(([type, errorMsg]) => {
-        if (nodes.filter(node => node.type === type).length > 1) {
-          errors.push(errorMsg);
-        }
-      });
-    }
+  if (nodes?.length > 0) {
+    Object.entries(moreThanOneInvalid).forEach(([type, errorMsg]) => {
+      if (nodes.filter((node) => node.type === type).length > 1) {
+        errors.push(errorMsg);
+      }
+    });
+  }
 
-    return errors
-}
+  return errors;
+};
 
 export { validateWorkflowPath, hasMoreThanOneInvalid };

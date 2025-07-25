@@ -1,8 +1,4 @@
-import {
-  Button,
-  Flex,
-  Text
-} from '@radix-ui/themes';
+import { Button, Flex, Text } from '@radix-ui/themes';
 import { Plus } from 'lucide-react';
 import React from 'react';
 import { ErrorAlert } from './ErrorAlert';
@@ -22,7 +18,7 @@ export const FieldsList: React.FC<FieldsListProps> = ({
   onAddField,
   onUpdateField,
   onRemoveField,
-  errors
+  errors,
 }) => {
   return (
     <>
@@ -52,9 +48,7 @@ export const FieldsList: React.FC<FieldsListProps> = ({
       </Flex>
 
       {/* Fields validation error */}
-      {errors.fields && (
-        <ErrorAlert>{errors.fields}</ErrorAlert>
-      )}
+      {errors.fields && <ErrorAlert>{errors.fields}</ErrorAlert>}
     </>
   );
 };

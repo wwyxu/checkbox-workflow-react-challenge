@@ -9,7 +9,7 @@ import {
   ReactFlowProvider,
   useEdgesState,
   useNodesState,
-  useReactFlow
+  useReactFlow,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -46,7 +46,7 @@ const nodeColor = {
   [NodeTypes.CONDITIONAL]: '#f59e0b',
   [NodeTypes.API]: '#a855f7',
   [NodeTypes.END]: '#ef4444',
-  default: '#6b7280'
+  default: '#6b7280',
 };
 
 const WorkflowEditorInner = () => {
@@ -77,7 +77,7 @@ const WorkflowEditorInner = () => {
   }, [edges]);
 
   const nextNodeId = useMemo(
-    () => nodes?.length ? Math.max(...nodes.map(n => Number(n.id))) + 1 : 0,
+    () => (nodes?.length ? Math.max(...nodes.map((n) => Number(n.id))) + 1 : 0),
     [nodes]
   );
 
@@ -130,12 +130,13 @@ const WorkflowEditorInner = () => {
     setSelectedNode(null);
   }, []);
 
-  const handleNodeSave = useCallback((node) => {
-    setNodes((nds) =>
-      nds.map((n) => (n.id === node.id ? { ...n, data: { ...node.data } } : n))
-    );
-    setModalType(ModalTypes.NONE);
-  }, [nodes, setNodes]);
+  const handleNodeSave = useCallback(
+    (node) => {
+      setNodes((nds) => nds.map((n) => (n.id === node.id ? { ...n, data: { ...node.data } } : n)));
+      setModalType(ModalTypes.NONE);
+    },
+    [nodes, setNodes]
+  );
 
   const modalOpen = modalType !== ModalTypes.NONE;
   const { modalTitle, modalContent } = WorkflowModal({
@@ -201,13 +202,12 @@ const WorkflowEditorInner = () => {
               <MiniMap
                 style={{
                   backgroundColor: 'white',
-                  boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                  boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
                 }}
                 nodeColor={(node) => nodeColor[node.type] || nodeColor.default}
               />
               <Background color="#e2e8f0" gap={20} />
             </ReactFlow>
-
           </Card>
         </Box>
       </Flex>
