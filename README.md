@@ -168,11 +168,13 @@ Cons: Longer to implement foundations, simply unnecessary if their aren't alot o
 - Cons, more folders to manage
 
 ex.
+```
 │   ├── modal/                    
 │   │   ├── index.tsx
 │   │   ├── anyotherdecoupledlogic.tsx
 │   |   ├── footer/      
 │   |   ├── ├── index.tsx      
+```
 
 ## Assumptions and limitation
 
