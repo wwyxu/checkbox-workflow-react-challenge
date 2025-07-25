@@ -1,4 +1,3 @@
-
 interface ValidationErrors {
   nodeName?: string;
   fields?: string;
