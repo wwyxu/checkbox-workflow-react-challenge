@@ -61,7 +61,7 @@ describe('removeSelectedFieldsFromIsolatedApiNodes', () => {
         data: { label: 'Form', fields: [] }
     };
 
-    it('removes selectedFields for isolated API nodes', () => {
+    it('removes selectedFields for isolated Api Nodes', () => {
         const nodes = [apiNode, formNode];
         const edges: any[] = [];
         const result = removeSelectedFieldsFromIsolatedApiNodes(nodes, edges);
@@ -69,7 +69,7 @@ describe('removeSelectedFieldsFromIsolatedApiNodes', () => {
         expect(result[1].data.fields).toEqual([]);
     });
 
-    it('does not remove selectedFields if API node has incoming edge', () => {
+    it('does not remove selectedFields if Api Node has incoming edge', () => {
         const nodes = [apiNode, formNode];
         const edges = [{ source: 'form1', target: 'api1' }];
         const result = removeSelectedFieldsFromIsolatedApiNodes(nodes, edges);
@@ -81,7 +81,7 @@ describe('removeSelectedFieldsFromIsolatedApiNodes', () => {
         expect(removeSelectedFieldsFromIsolatedApiNodes([], null as any)).toEqual([]);
     });
 
-    it('does not affect non-API nodes', () => {
+    it('does not affect non-Api Nodes', () => {
         const nodes = [formNode];
         const edges: any[] = [];
         const result = removeSelectedFieldsFromIsolatedApiNodes(nodes, edges);

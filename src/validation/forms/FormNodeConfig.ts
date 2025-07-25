@@ -1,7 +1,6 @@
 import { Validation } from "@/models";
 import { validateWithSchema } from "./Schema";
 
-// Form Node Schema
 export const formNodeSchema: Validation.Schema = {
   fields: [
     {

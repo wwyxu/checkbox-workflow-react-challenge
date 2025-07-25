@@ -25,7 +25,7 @@ describe('createWorkFlowSave', () => {
     it('should save workflow config to localStorage', () => {
         const nodes = [
             { id: '1', type: 'form', position: { x: 1, y: 2 }, data: { label: 'Form Node' } },
-            { id: '2', type: 'api', position: { x: 3, y: 4 }, data: { label: 'API Node' } }
+            { id: '2', type: 'api', position: { x: 3, y: 4 }, data: { label: 'Api Node' } }
         ];
         const edges = [
             { id: 'e1', source: '1', target: '2', label: 'Edge from 1 to 2' }

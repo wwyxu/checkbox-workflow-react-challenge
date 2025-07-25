@@ -1,6 +1,5 @@
 import { Validation } from "@/models";
 
-
 export function validateWithSchema(schema: Validation.Schema, values: Record<string, any>) {
     const errors: Validation.ValidationErrors = {};
 

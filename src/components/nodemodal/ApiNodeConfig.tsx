@@ -102,7 +102,7 @@ const APINodeConfig = ({ node, onSave, nodes, edges, onClose }) => {
                         selectedFields={selectedFields}
                         onFieldToggle={handleFieldToggle}
                         label="Request Body Fields"
-                        emptyMessage="No form fields available. Add Form nodes to the workflow first."
+                        emptyMessage="No form fields available. Add Form Nodes to the workflow first."
                     />
                 </Box>
 

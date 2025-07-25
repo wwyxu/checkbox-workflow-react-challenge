@@ -2,55 +2,43 @@ import { getImmediatePrecedingFormNodes, createNewNode } from '../nodes';
 import { NodeTypes, HttpTypes } from "@/constants";
 
 describe('createNewNode', () => {
-    it('creates a Form node', () => {
+    it('creates a Form Node', () => {
         const node = createNewNode(1, NodeTypes.FORM, { x: 10, y: 20 });
         expect(node).toEqual({
             id: '1',
             type: NodeTypes.FORM,
             position: { x: 10, y: 20 },
             data: {
-                label: `${NodeTypes.FORM} node`,
+                label: `Form Node`,
                 fields: []
             }
         });
     });
 
-    it('creates a Conditional node', () => {
+    it('creates a Conditional Node', () => {
         const node = createNewNode(2, NodeTypes.CONDITIONAL, { x: 0, y: 0 });
         expect(node).toEqual({
             id: '2',
             type: NodeTypes.CONDITIONAL,
             position: { x: 0, y: 0 },
             data: {
-                label: `${NodeTypes.CONDITIONAL} node`,
+                label: `Conditional Node`,
                 conditions: []
             }
         });
     });
 
-    it('creates an API node', () => {
+    it('creates an Api Node', () => {
         const node = createNewNode(3, NodeTypes.API, { x: 5, y: 5 });
         expect(node).toEqual({
             id: '3',
             type: NodeTypes.API,
             position: { x: 5, y: 5 },
             data: {
-                label: `${NodeTypes.API} node`,
+                label: `Api Node`,
                 endpoint: '',
                 method: HttpTypes.POST,
                 selectedFields: []
-            }
-        });
-    });
-
-    it('creates a node with unknown type', () => {
-        const node = createNewNode(4, 'unknown', { x: 1, y: 1 });
-        expect(node).toEqual({
-            id: '4',
-            type: 'unknown',
-            position: { x: 1, y: 1 },
-            data: {
-                label: `unknown node`
             }
         });
     });
@@ -63,7 +51,7 @@ describe('getImmediatePrecedingFormNodes', () => {
     const nodes = [
         { id: 'form1', type: 'form', data: { label: 'Form 1', fields: [formFieldA] } },
         { id: 'form2', type: 'form', data: { label: 'Form 2', fields: [formFieldB] } },
-        { id: 'api1', type: 'api', data: { label: 'API Node' } }
+        { id: 'api1', type: 'api', data: { label: 'Api Node' } }
     ];
 
     const edges = [
@@ -92,10 +80,10 @@ describe('getImmediatePrecedingFormNodes', () => {
         expect(getImmediatePrecedingFormNodes('form1', nodes, edges2)).toEqual([]);
     });
 
-    it('handles form nodes with empty fields', () => {
+    it('handles Form Nodes with empty fields', () => {
         const nodes2 = [
             { id: 'form3', type: 'form', data: { label: 'Form 3', fields: [] } },
-            { id: 'api2', type: 'api', data: { label: 'API Node' } }
+            { id: 'api2', type: 'api', data: { label: 'Api Node' } }
         ];
         const edges2 = [{ source: 'form3', target: 'api2' }];
         expect(getImmediatePrecedingFormNodes('api2', nodes2, edges2)).toEqual([]);

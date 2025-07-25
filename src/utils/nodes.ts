@@ -1,20 +1,40 @@
 import { HttpTypes, NodeTypes } from "@/constants";
 import { Models } from "@/models";
 
+const nodeSchemas = {
+    [NodeTypes.START]: {
+        defaultData: () => ({ label: 'Start Node' }),
+    },
+    [NodeTypes.FORM]: {
+        defaultData: () => ({ label: 'Form Node', fields: [] }),
+    },
+    [NodeTypes.CONDITIONAL]: {
+        defaultData: () => ({ label: 'Conditional Node', conditions: [] }),
+    },
+    [NodeTypes.API]: {
+        defaultData: () => ({
+            label: 'Api Node',
+            endpoint: '',
+            method: HttpTypes.POST,
+            selectedFields: [],
+        }),
+    },
+    [NodeTypes.END]: {
+        defaultData: () => ({ label: 'End Node' }),
+    },
+    default: {
+        defaultData: () => ({ label: 'Node' }),
+    },
+};
+
 const createNewNode = (id: number, type: string, position) => {
-    const newNode = {
+    const schema = nodeSchemas[type] || nodeSchemas.default;
+    return {
         id: `${id}`,
         type,
         position,
-        data: {
-            label: `${type} node`,
-            ...(type === NodeTypes.FORM && { fields: [] }),
-            ...(type === NodeTypes.CONDITIONAL && { conditions: [] }),
-            ...(type === NodeTypes.API && { endpoint: '', method: HttpTypes.POST, selectedFields: [] }),
-        },
+        data: schema.defaultData(),
     };
-    
-    return newNode;
 };
 
 function getImmediatePrecedingFormNodes(nodeId, nodes, edges) {
@@ -31,7 +51,7 @@ function getImmediatePrecedingFormNodes(nodeId, nodes, edges) {
     // Get the source node IDs from these direct edges
     const immediateSourceIds = incomingEdges.map(edge => edge.source);
 
-    // Filter for Form nodes only from the immediate predecessors
+    // Filter for Form Nodes only from the immediate predecessors
     const formNodes = nodes.filter(node =>
         immediateSourceIds.includes(node.id) &&
         node.type === 'form' // Assuming 'form' is the type identifier

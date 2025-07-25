@@ -6,7 +6,7 @@ export declare namespace Models {
     type FormFieldType = FormFieldTypes.TEXT | FormFieldTypes.EMAIL | FormFieldTypes.NUMBER;
     type ModalType = ModalTypes.NONE | ModalTypes.NODE | ModalTypes.SAVE;
 
-    // Form field definition for form nodes
+    // Form field definition for Form Nodes
     export interface FormField {
         id: string;
         name: string;

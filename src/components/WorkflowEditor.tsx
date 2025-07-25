@@ -66,7 +66,7 @@ const WorkflowEditorInner = () => {
   }, [setNodes, setEdges]);
 
   useEffect(() => {
-    // Validate that there are no more than one start and end node
+    // Validate that there are no more than one start and End Node
     setWorkflowErrors(hasMoreThanOneInvalid(nodes));
   }, [nodes]);
 

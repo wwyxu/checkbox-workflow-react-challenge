@@ -106,9 +106,11 @@ src/
 │   └── index.ts
 ├── validation/                    # Schema validation and rules
 │   ├── __tests__/                 # Unit tests for validation
+│   ├── common/  
 │   ├── forms/
 │   │   ├── ApiNodeConfig.ts
 │   │   ├── FormNodeConfig.ts
+│   │   ├── Schema.ts              # Define Schemas to validate forms
 │   │   └── ValidForms.ts
 │   ├── workflow/
 │   │   └── ValidPath.ts
@@ -145,13 +147,13 @@ Cons: Not good for extensibility, eg if we were to turn this into a collaborativ
 
 ### Object Creation
 
-Current implementation just simply creates a new object with essential an if else using clean e6 syntax 
+Previous implementation just simply creates a new object with essential an if else using clean e6 syntax 
 Pros: Quick and easy to implement
 Cons: Difficult to maintain if we were to have many different new objects
 
 Factory Pattern:
-Pros: Easy to implement to nodes
-Cons: Longer to implement, simply unnecessary if their aren't alot of different object types
+Pros: Easy to implement to new nodes
+Cons: Longer to implement foundations, simply unnecessary if their aren't alot of different object types
 
 #### Modal Alternative Approaches
 

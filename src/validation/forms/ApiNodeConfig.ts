@@ -3,7 +3,6 @@ import { Validation } from "@/models";
 import { validateURL } from "@/validation/common";
 import { validateWithSchema } from "./Schema";
 
-// API Node Schema
 export const apiNodeSchema: Validation.Schema = {
     fields: [
         {

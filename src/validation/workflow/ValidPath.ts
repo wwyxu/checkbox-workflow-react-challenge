@@ -2,17 +2,17 @@ import { moreThanOneInvalid } from "@/constants";
 
 function validateWorkflowPath(nodes, edges) {
   const errors = [];
-  // Find start and end nodes
+  // Find start and End Nodes
   const startNodes = nodes.filter(node => node.type === 'start');
   const endNodes = nodes.filter(node => node.type === 'end');
 
   // Validation checks
   if (startNodes.length === 0) {
-    errors.push('No start node found');
+    errors.push('No Start Node found');
   }
 
   if (endNodes.length === 0) {
-    errors.push('No end node found');
+    errors.push('No End Node found');
   }
 
   if (errors.length > 0) {
@@ -34,7 +34,7 @@ function validateWorkflowPath(nodes, edges) {
     }
   });
 
-  // Perform DFS to check if end node is reachable from start node
+  // Perform DFS to check if End Node is reachable from Start Node
   function canReachEnd(currentNodeId, visited = new Set()) {
     if (currentNodeId === endNode.id) {
       return true;
@@ -59,7 +59,7 @@ function validateWorkflowPath(nodes, edges) {
   const hasCompletePath = canReachEnd(startNode.id);
 
   if (!hasCompletePath) {
-    errors.push(`No complete path exists from start node ${startNode.id} to end node ${endNode.id}`);
+    errors.push(`No complete path exists from Start Node ${startNode.id} to End Node ${endNode.id}`);
   }
 
   return errors;

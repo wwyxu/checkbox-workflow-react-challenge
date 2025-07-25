@@ -2,24 +2,24 @@ import { validateWorkflowPath, hasMoreThanOneInvalid } from '../../workflow/Vali
 import { moreThanOneInvalid } from '@/constants';
 
 describe('validateWorkflowPath', () => {
-    it('returns error if no start node', () => {
+    it('returns error if no Start Node', () => {
         const nodes = [{ id: '1', type: 'end' }];
         const edges: any[] = [];
-        expect(validateWorkflowPath(nodes, edges)).toEqual(['No start node found']);
+        expect(validateWorkflowPath(nodes, edges)).toEqual(['No Start Node found']);
     });
 
-    it('returns error if no end node', () => {
+    it('returns error if no End Node', () => {
         const nodes = [{ id: '1', type: 'start' }];
         const edges: any[] = [];
-        expect(validateWorkflowPath(nodes, edges)).toEqual(['No end node found']);
+        expect(validateWorkflowPath(nodes, edges)).toEqual(['No End Node found']);
     });
 
-    it('returns error if neither start nor end node', () => {
+    it('returns error if neither start nor End Node', () => {
         const nodes = [{ id: '1', type: 'api' }];
         const edges: any[] = [];
         expect(validateWorkflowPath(nodes, edges)).toEqual([
-            'No start node found',
-            'No end node found'
+            'No Start Node found',
+            'No End Node found'
         ]);
     });
 
@@ -30,7 +30,7 @@ describe('validateWorkflowPath', () => {
         ];
         const edges: any[] = []; // no edges
         expect(validateWorkflowPath(nodes, edges)).toEqual([
-            'No complete path exists from start node start1 to end node end1'
+            'No complete path exists from Start Node start1 to End Node end1'
         ]);
     });
 
@@ -65,26 +65,26 @@ describe('validateWorkflowPath', () => {
 describe('hasMoreThanOneInvalid', () => {
     beforeAll(() => {
         // Example moreThanOneInvalid for testing
-        (moreThanOneInvalid as any).start = 'Cannot have more than one start node';
-        (moreThanOneInvalid as any).end = 'Cannot have more than one end node';
-        (moreThanOneInvalid as any).conditional = 'Cannot have more than one conditional node';
+        (moreThanOneInvalid as any).start = 'Cannot have more than one Start Node';
+        (moreThanOneInvalid as any).end = 'Cannot have more than one End Node';
+        (moreThanOneInvalid as any).conditional = 'Cannot have more than one Conditional Node';
     });
 
-    it('returns error for multiple start nodes', () => {
+    it('returns error for multiple Start Nodes', () => {
         const nodes = [
             { id: '1', type: 'start' },
             { id: '2', type: 'start' },
             { id: '3', type: 'api' }
         ];
-        expect(hasMoreThanOneInvalid(nodes)).toContain('Cannot have more than one start node');
+        expect(hasMoreThanOneInvalid(nodes)).toContain('Cannot have more than one Start Node');
     });
 
-    it('returns error for multiple end nodes', () => {
+    it('returns error for multiple End Nodes', () => {
         const nodes = [
             { id: '1', type: 'end' },
             { id: '2', type: 'end' }
         ];
-        expect(hasMoreThanOneInvalid(nodes)).toContain('Cannot have more than one end node');
+        expect(hasMoreThanOneInvalid(nodes)).toContain('Cannot have more than one End Node');
     });
 
     it('returns multiple error messages if multiple types are duplicated', () => {
@@ -97,9 +97,9 @@ describe('hasMoreThanOneInvalid', () => {
             { id: '6', type: 'conditional' }
         ];
         const errors = hasMoreThanOneInvalid(nodes);
-        expect(errors).toContain('Cannot have more than one start node');
-        expect(errors).toContain('Cannot have more than one end node');
-        expect(errors).toContain('Cannot have more than one conditional node');
+        expect(errors).toContain('Cannot have more than one Start Node');
+        expect(errors).toContain('Cannot have more than one End Node');
+        expect(errors).toContain('Cannot have more than one Conditional Node');
     });
 
     it('returns empty array if no invalid counts', () => {

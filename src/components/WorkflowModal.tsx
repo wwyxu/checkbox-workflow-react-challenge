@@ -19,7 +19,7 @@ const WorkflowModal = ({
   let modalContent: React.ReactNode = null;
 
   if (modalType === ModalTypes.NODE && selectedNode) {
-    modalTitle = `${selectedNode.type} Node Details`;
+    modalTitle = `${selectedNode?.data?.label} Details`;
     if (selectedNode.type === NodeTypes.API) {
       modalContent = (
         <APINodeConfig
