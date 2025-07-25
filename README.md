@@ -172,10 +172,24 @@ ex.
 │   │   ├── index.tsx
 │   │   ├── anyotherdecoupledlogic.tsx
 │   |   ├── footer/      
-│   |   ├── ├── index.tsx         
+│   |   ├── ├── index.tsx      
+
+## Assumptions and limitation
+
+Assumed that the assignment was to test development under real world time constraints, where deadlines must be met. Thus cut corners to achieve something deliverable within this time frame. e.g sacrificing code quality for results.
+
+## How the implementation supports future extensibility
+- Can create new schemas for new nodes and validation
+- Reusable components are in common folders and lifted to the highest point in the folder hierarchy where they are used.
+- Would ideally implement redux for future proofing
+- Things are well organized and seperated by use case
+
+## Testing strategy
+Wrote unit tests for the most important logic, would extend this to include integration/e2e tests with more time
 
 ## Improvements
 
 - Adding more typescript types
 - Moving more of the javascript styles to styles.css
 - Implement Redux
+- E2e/integration testing
