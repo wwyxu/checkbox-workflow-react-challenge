@@ -65,7 +65,7 @@ src/
 │   ├── BlockPanel.tsx             # Left panel with draggable blocks
 │   ├── WorkflowModal.tsx          # Modal for editing workflow details
 │   ├── common/                    # Reusable UI components
-│   │   ├── Modal.tsx
+│   │   ├── Modal.tsx              # Higher order component modal
 │   │   └── ModalFooter.tsx
 │   ├── nodeconfig/                # Node configuration modals
 │   │   ├── common/                # Reusable form components
