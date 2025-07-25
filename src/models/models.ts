@@ -11,6 +11,7 @@ export declare namespace Models {
         nodeName?: string;
         url?: string;
         httpMethod?: string;
+        fields?: string;
     }
 
     // Form field definition for form nodes

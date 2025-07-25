@@ -46,4 +46,26 @@ function getImmediatePrecedingFormNodes(nodeId, nodes, edges) {
     return formNodes;
 }
 
-export { getImmediatePrecedingFormNodes, createNewNode };
+function removeSelectedFieldsFromIsolatedApiNodes(nodes, edges) {
+    if (!Array.isArray(nodes) || !Array.isArray(edges)) {
+        return [];
+    }
+
+    const nodesWithIncomingEdges = new Set(edges.map(edge => edge.target));
+
+    return nodes.map(node => {
+        if (!nodesWithIncomingEdges.has(node.id) && node.type === NodeTypes.API) {
+            return {
+                ...node,
+                data: {
+                    ...node.data,
+                    selectedFields: undefined
+                }
+            };
+        }
+
+        return node;
+    });
+}
+
+export { getImmediatePrecedingFormNodes, createNewNode, removeSelectedFieldsFromIsolatedApiNodes };

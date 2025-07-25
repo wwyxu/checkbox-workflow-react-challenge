@@ -18,7 +18,8 @@ import { Box, Button, Card, Flex, Heading, Text } from '@radix-ui/themes';
 import { Save } from 'lucide-react';
 
 import { createNewNode, createWorkFlowSave, getInitialData } from '@/utils';
-import { hasMoreThanOneInvalid, removeSelectedFieldsFromIsolatedApiNodes, validateForms, validateWorkflowPath } from '@/validation';
+import { hasMoreThanOneInvalid, validateForms, validateWorkflowPath } from '@/validation';
+import { removeSelectedFieldsFromIsolatedApiNodes } from '@/utils';
 
 import { EVENT_DATA_TRANSFER_KEY, ModalTypes, NodeTypes } from '@/constants';
 

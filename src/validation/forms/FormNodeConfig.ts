@@ -1,11 +1,7 @@
-interface ValidationErrors {
-  nodeName?: string;
-  fields?: string;
-  [key: string]: string | undefined; // For dynamic field error keys like `field_${id}_name`
-}
+import { Models } from "@/models";
 
 const validateFormNodeConfig = (nodeName, fields) => {
-    const newErrors: ValidationErrors = {};
+    const newErrors: Models.ValidationErrors = {};
 
     if (!nodeName?.trim()) {
         newErrors.nodeName = 'Node name is required';
