@@ -1,9 +1,9 @@
 import React from 'react';
 import { Text } from '@radix-ui/themes';
 import { ModalFooter } from './common/ModalFooter';
-import APINodeConfig from './nodemodal/ApiNodeConfig';
-import FormNodeConfig from './nodemodal/FormNodeConfig';
-import NodeDetails from './nodemodal/DefaultNodeConfig';
+import APINodeConfig from './nodeconfig/ApiNodeConfig';
+import FormNodeConfig from './nodeconfig/FormNodeConfig';
+import NodeDetails from './nodeconfig/DefaultNodeConfig';
 import { ModalTypes, NodeTypes } from '@/constants';
 
 const WorkflowModal = ({

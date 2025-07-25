@@ -120,6 +120,7 @@ const WorkflowEditorInner = () => {
       return;
     }
 
+    setWorkflowSaveErrors([]);
     createWorkFlowSave(nodes, edges);
     setModalType(ModalTypes.SAVE);
   };

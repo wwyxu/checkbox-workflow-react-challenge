@@ -67,7 +67,7 @@ src/
 │   ├── common/                    # Reusable UI components
 │   │   ├── Modal.tsx
 │   │   └── ModalFooter.tsx
-│   ├── nodemodal/                 # Node configuration modals
+│   ├── nodeconfig/                # Node configuration modals
 │   │   ├── common/                # Reusable form components
 │   │   │   ├── ErrorAlert.tsx
 │   │   │   ├── FieldCheckBoxItem.tsx
@@ -95,15 +95,15 @@ src/
 ├── models/                        # Data models and interfaces
 │   ├── index.ts
 │   └── models.ts
+│   └── validation.ts
 ├── pages/                         # Page-level components
 │   ├── Index.tsx
 │   └── NotFound.tsx
 ├── utils/                         # Utility functions
-│   └── nodes/
-│       ├── index.ts
-│       ├── selectState.ts         # Fixes a racing condition bug between useClickOutside and a dropdown field 
-│       └── workflow.ts
+│   └── nodes
 │   └── index.ts
+│   └── selectState.ts         # Fixes a racing condition bug between useClickOutside and a dropdown field 
+│   └── workflow.ts
 ├── validation/                    # Schema validation and rules
 │   ├── __tests__/                 # Unit tests for validation
 │   ├── common/  
@@ -124,7 +124,7 @@ src/
 
 Pros:
    - Cleaner code, more maintainable, scalable with better seperation of concerns = better for testing as well
-   - For modules such as the Modal, we can join the modal and modal footer together and use redux to manage behaviours like save, close and what to render. Currently we are managing state internally to the different form components and importing footer to handle the save and close functionality, with redux we can alter the save behaviour according to which form is present. This is achievable without redux but it gets messy as we have to lift the state up to the closest common parent.
+   - See Modal
 
 Cons:
    - Takes longer to implement and develop features for in the short term
@@ -145,19 +145,19 @@ Cons: Takes longer to implement the foundations
 Pros: Simple to implement and quick
 Cons: Not good for extensibility, eg if we were to turn this into a collaborative app. Better to use a uuid (slower however)
 
-### Object Creation
+### Node Creation
 
-Previous implementation just simply creates a new object with essential an if else using clean e6 syntax 
+Previous implementation just simply creates a new node with essentially an if else using clean e6 syntax 
 Pros: Quick and easy to implement
-Cons: Difficult to maintain if we were to have many different new objects
+Cons: Difficult to maintain if we were to have many different new node types
 
-Factory Pattern:
-Pros: Easy to implement to new nodes
-Cons: Longer to implement foundations, simply unnecessary if their aren't alot of different object types
+Factory Pattern: (Can alternatively implement this with a switch statement)
+Pros: Easy to implement to new nodes simply by adding new schemas
+Cons: Longer to implement foundations, simply unnecessary if their aren't alot of different node types
 
 #### Modal Alternative Approaches
 
-- Current approach - Importing footer to each child node config so we can we can manage validation and state internally, whilst passing onsave to the footer. Quicket to implement but not the cleanest solution as we are passing footer multiple times to the same object.
+- Current approach - Importing footer to each child node config so we can we can manage validation and state internally, whilst passing onsave to the footer. Quickest to implement but not the cleanest solution as we are passing footer multiple times to the same type of components.
 - Redux to manage state - Best solution long term, takes longer to implement but more scalable and maintainable, we can combine footer and modal together and change footer behaviour depending on the current node selected.
 - Alternative approach without redux - Lift state up from the nodemodal components, ex to workflow modal/modal and manage validation, state, saving there. Can use react context to make it a bit cleaner. Somewhere in the middle of the 2 above approaches in terms of time required to develop vs scalability/maintainability.
 
@@ -165,7 +165,7 @@ Cons: Longer to implement foundations, simply unnecessary if their aren't alot o
 
 - Naming files index.ts and nesting them within a folder of its intended name, can decouple logic further this way and nest child components within the folder
 - Pros, easier to scale and maintain child components
-- Cons, many folders to manage
+- Cons, more folders to manage
 
 ex.
 │   ├── modal/                    
@@ -178,5 +178,4 @@ ex.
 
 - Adding more typescript types
 - Moving more of the javascript styles to styles.css
-- Implement the factory pattern for node creation
-
+- Implement Redux
