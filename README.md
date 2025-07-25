@@ -209,3 +209,4 @@ Wrote unit tests for the most important logic, would extend this to include inte
 - Moving more of the javascript styles to styles.css
 - Implement Redux
 - E2e/integration testing
+- Create a dynamic form component which renders fields based on the object type
